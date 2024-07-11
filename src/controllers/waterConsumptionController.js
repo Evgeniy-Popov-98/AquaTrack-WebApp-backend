@@ -1,4 +1,4 @@
-// Контроллеры для обработки запросов связанных с потреблением воды
+
 import { fetchDailyConsumptionService, fetchMonthlyConsumptionService } from '../services/waterConsumptionService.js';
 
 export const fetchDailyConsumption = async (req, res) => {

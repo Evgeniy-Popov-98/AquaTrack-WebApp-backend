@@ -1,4 +1,4 @@
-// Основной файл сервера Express
+
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';

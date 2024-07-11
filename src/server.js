@@ -9,6 +9,9 @@ import { ENV_VARS } from './constants/constants.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
+import logger from './middleware/logger.js';
+import waterConsumptionRoutes from './routes/waterConsumptionRoutes.js';
+
 export const setupServer = () => {
   const app = express();
 
@@ -30,6 +33,10 @@ export const setupServer = () => {
       limit: '1mb',
     }),
   );
+
+  app.use(logger);
+
+  app.use('/water-consumption', waterConsumptionRoutes);
 
   app.use('*', notFoundHandler);
 

@@ -1,6 +1,7 @@
 
 import { fetchDailyConsumptionService, fetchMonthlyConsumptionService } from '../services/waterConsumptionService.js';
 
+
 export const fetchDailyConsumption = async (req, res) => {
   const date = req.params.date;
 

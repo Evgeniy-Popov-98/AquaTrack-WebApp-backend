@@ -1,4 +1,3 @@
-// services\authServices.js
 import createHttpError from 'http-errors';
 import registerUser from '../db/models/registerUser.js';
 import { Session } from '../db/models/Session.js';
@@ -35,6 +34,8 @@ export const loginUserService = async ({ email, password }) => {
   const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_ACCESS_EXPIRATION });
   const refreshToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_REFRESH_EXPIRATION });
 
+  console.log('Generated tokens:', { accessToken, refreshToken });
+
   // Перевірка існуючої сесії
   let session = await Session.findOne({ userId: user._id });
   if (session) {
@@ -64,6 +65,8 @@ export const loginUserService = async ({ email, password }) => {
 
 export const refreshSessionService = async (refreshToken) => {
   const decoded = jwt.verify(refreshToken, JWT_SECRET);
+
+  console.log('Decoded refresh token:', decoded);
 
   // Видалення старої сесії
   const session = await Session.findOneAndDelete({ refreshToken });

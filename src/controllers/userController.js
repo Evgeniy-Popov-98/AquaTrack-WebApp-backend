@@ -1,6 +1,6 @@
 
 import createHttpError from 'http-errors';
-import { updateUserService, refreshTokensService, logoutUserService,decodeToken  } from '../services/userService.js';
+import { updateUserService, refreshTokensService, logoutUserService,decodeToken  } from '../servies/userService.js';
 
 
 export const getCurrentUserController = (req, res, next) => {

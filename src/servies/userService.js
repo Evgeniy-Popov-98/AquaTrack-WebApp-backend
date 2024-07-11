@@ -1,5 +1,5 @@
 // services\userServices.js
-import User from '../models/User.js'; // Переконайтеся, що шлях відповідає вашій структурі проекту
+import User from '../db/models/User.js'; // Переконайтеся, що шлях відповідає вашій структурі проекту
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = 'your_jwt_secret';

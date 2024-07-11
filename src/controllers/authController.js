@@ -1,5 +1,5 @@
 import createHttpError from 'http-errors';
-import { registerUserService, loginUserService } from '../services/authServices.js';
+import { registerUserService, loginUserService } from '../servies/authServices.js';
 
 // Реєстрація нового користувача
 export const registerUser = async (req, res, next) => {

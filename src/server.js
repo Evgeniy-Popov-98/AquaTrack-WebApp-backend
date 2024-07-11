@@ -1,35 +1,27 @@
+// app.js
+
 import express from 'express';
-import pino from 'pino-http';
-import cors from 'cors';
-import cookieParser from 'cookie-parser';
+import 'dotenv/config';
+import { errorHandler } from './middleware/errorHandler.js';
+import userRoutes from './routers/userRoutes.js';
 
-import { env } from './utils/env.js';
-import { ENV_VARS } from './constants/constants.js';
-
-export const setupServer = () => {
+const setupServer = () => {
   const app = express();
-
-  app.use(
-    pino({
-      transport: {
-        target: 'pino-pretty',
-      },
-    }),
-  );
-
-  app.use(cors());
-
-  app.use(cookieParser());
 
   app.use(
     express.json({
       type: ['application/json', 'application/vnd.api+json'],
-      limit: '1mb',
-    }),
+    })
   );
 
-  const PORT = env(ENV_VARS.PORT, 3000);
-  app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-  });
+  // Ваші маршрути
+  app.use('/users', userRoutes);
+
+  // Підключення обробника помилок
+  app.use(errorHandler);
+
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 };
+
+export { setupServer };

@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { HttpError } from '../middleware/HttpError.js'; // Підключаємо HttpError
+import { HttpError } from '../middleware/HttpError.js';
 
 const {
   ACCESS_SECRET,
@@ -19,23 +19,23 @@ export const createRefreshToken = id =>
   });
 
 export const tokenValidation = accessToken => {
-  if (!accessToken) throw new HttpError(401, 'Not authorized');
+  if (!accessToken) throw new HttpError(401, 'Токен доступу відсутній');
 
   try {
     const { id } = jwt.verify(accessToken, ACCESS_SECRET);
     return id;
-  } catch (error) {
-    throw new HttpError(401, 'Not authorized');
+  } catch (err) {
+    throw new HttpError(401, `Недійсний токен доступу: ${err.message}`);
   }
 };
 
 export const refreshTokenValidation = refreshToken => {
-  if (!refreshToken) throw new HttpError(403, 'Refresh token is missing');
+  if (!refreshToken) throw new HttpError(403, 'Токен оновлення відсутній');
 
   try {
     const { id } = jwt.verify(refreshToken, REFRESH_SECRET);
     return id;
-  } catch (error) {
-    throw new HttpError(403, 'Invalid refresh token');
+  } catch (err) {
+    throw new HttpError(403, `Недійсний токен оновлення: ${err.message}`);
   }
 };

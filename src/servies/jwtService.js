@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { HttpError } from '../middleware/HttpError'; // Підключаємо HttpError
+import { HttpError } from '../middleware/HttpError.js'; // Підключаємо HttpError
 
 const {
   ACCESS_SECRET,

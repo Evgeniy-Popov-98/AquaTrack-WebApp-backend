@@ -1,7 +1,7 @@
 // services\authServices.js
 import createHttpError from 'http-errors';
-import registerUser from '../models/registerUser.js';
-import { Session } from '../models/Session.js';
+import registerUser from '../db/models/registerUser.js';
+import { Session } from '../db/models/Session.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 

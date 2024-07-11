@@ -1,46 +1,77 @@
-// services\userServices.js
-import User from '../db/models/User.js'; // Переконайтеся, що шлях відповідає вашій структурі проекту
+import User from '../db/models/User.js';
 import jwt from 'jsonwebtoken';
+import mongoose from 'mongoose';
 
 const JWT_SECRET = 'your_jwt_secret';
 
-// Функція сервісу для отримання інформації про поточного користувача
-export const getCurrentUserService = async (userId) => {
-    try {
-        console.log(`Отримуємо інформацію про користувача з id: ${userId}`);
-        const user = await User.findById(userId).select('-password');
-        console.log('Результат запиту до бази даних:', user);
-        return user;
-    } catch (error) {
-        console.error('Помилка при отриманні інформації про користувача:', error);
-        throw new Error('Користувача не знайдено або виникла помилка');
-    }
-};
-
-// Функція для декодування токену і отримання userId
+// Function to decode token and get user
 export const decodeToken = (token) => {
     try {
+        console.log('Received token:', token);
         const decoded = jwt.verify(token, JWT_SECRET);
-        return decoded.userId;
+        console.log('Decoded token:', decoded);
+        return decoded;
     } catch (error) {
-        console.error('Помилка декодування токену:', error);
-        throw new Error('Неправильний токен або токен вийшов з ладу');
+        console.error('Token decoding error:', error);
+        throw new Error('Invalid token or token expired');
     }
 };
 
-
-
-export const refreshTokensService = (userId) => {
-    const accessToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '15m' });
-    const refreshToken = jwt.sign({ userId }, JWT_SECRET, { expiresIn: '30d' });
-    return { accessToken, refreshToken };
-};
-
-export const logoutUserService = async (userId) => {
+// Service function to update user
+export const updateUserService = async (userId, userData, avatarFile) => {
     try {
-        console.log(`Logging out user with id: ${userId}`);
-        // Реалізуйте виход користувача тут, якщо потрібно
+        console.log('Received userId for update:', userId);
+        console.log('Received user data for update:', userData);
+
+        if (avatarFile) {
+            console.log('Received avatar file:', avatarFile);
+        }
+
+        if (!mongoose.isValidObjectId(userId)) {
+            console.error('Invalid userId format:', userId);
+            throw new Error('Invalid userId format');
+        }
+
+        let user = await User.findById(userId);
+
+        console.log('Database query result:', user);
+
+        if (!user) {
+            console.error('User not found:', userId);
+            throw new Error('User not found');
+        }
+
+        if (userData.name) user.name = userData.name;
+        if (userData.email) user.email = userData.email;
+        if (userData.gender) user.gender = userData.gender;
+        if (userData.weight) user.weight = userData.weight;
+        if (userData.activeSportsTime) user.activeSportsTime = userData.activeSportsTime;
+        if (userData.dailyWaterIntake) user.dailyWaterIntake = userData.dailyWaterIntake;
+
+        if (avatarFile) {
+            try {
+                user.avatar = avatarFile.path;
+            } catch (error) {
+                console.error('Error saving avatar:', error);
+                throw new Error('Error saving avatar');
+            }
+        }
+
+        await user.save();
+        console.log('Updated user:', user);
+        return user;
     } catch (error) {
-        throw new Error('Error logging out user');
+        console.error('Error updating user:', error);
+        throw new Error('Error updating user');
     }
+};
+
+// Other services that may be necessary for user management (e.g., token refresh, logout)
+
+export const refreshTokensService = async (refreshToken) => {
+    // Logic for token refresh
+};
+
+export const logoutUserService = async (refreshToken) => {
+    // Logic for logging out
 };

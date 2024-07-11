@@ -1,36 +1,44 @@
-import jwt from 'jsonwebtoken';
-import createHttpError from 'http-errors';
-import { getCurrentUserService, decodeToken } from '../services/userService.js'; // Змініть шлях до сервісу користувача на свій
+// authMiddleware.js
 
-const JWT_SECRET = 'your_jwt_secret';
 
-// Функція для аутентифікації користувача за токеном
+import { Session } from '../db/models/Session.js';
+import { tokenValidation } from '../servies/jwtService.js';
+
 export const authenticate = async (req, res, next) => {
-  // Отримуємо токен з заголовка Authorization
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
+  const { authorization } = req.headers;
 
-  // Перевіряємо чи токен існує
+  if (!authorization) {
+    return res.status(401).json({ message: 'Not authorized' });
+  }
+
+  const token = authorization.split(' ')[1];
+
   if (!token) {
-    return next(createHttpError(401, 'Access token is missing'));
+    return res.status(401).json({ message: 'Access token is missing' });
   }
 
   try {
-    // Декодуємо токен і отримуємо userId
-    const userId = decodeToken(token);
+    // Ваша функція для перевірки та отримання інформації з токену
+    const userId = tokenValidation(token);
 
-    // Отримуємо користувача за ID
-    const user = await getCurrentUserService(userId);
+    // Знайти сесію за userId
+    const session = await Session.findOne({ userId });
 
-    // Передаємо користувача до наступного middleware або обробника маршруту
-    req.user = user;
+    if (!session) {
+      throw new Error('Session not found');
+    }
 
-    // Продовжуємо обробку запиту
+    // Додати дані користувача до запиту
+    req.user = {
+      _id: session.userId,
+      name: session.name, // Припустимо, що ім'я зберігається в сесійному сховищі
+      email: session.email, // Припустимо, що email зберігається в сесійному сховищі
+      // Додайте інші дані користувача, які вам потрібні
+    };
+
     next();
   } catch (error) {
-    // Перехоплюємо помилки декодування токену або отримання користувача
-    return next(createHttpError(401, 'Invalid access token or user not found'));
+    console.error('Помилка в перевірці токена:', error.message);
+    return res.status(401).json({ message: 'Invalid access token' });
   }
 };
-
-export default authenticate;

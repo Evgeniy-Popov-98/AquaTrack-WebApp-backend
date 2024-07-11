@@ -13,6 +13,6 @@ registerSchema.methods.comparePassword = async function(candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-const registerUser = mongoose.model('registerUser', registerSchema);
+const registerUser = mongoose.model('user', registerSchema);
 
 export default registerUser;

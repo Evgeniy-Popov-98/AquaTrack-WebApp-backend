@@ -14,6 +14,7 @@ import {
 import { authenticate } from '../middleware/authMiddleware.js';
 import { registerUserSchema } from '../validation/registerUserSchema.js';
 import { loginUserSchema } from '../validation/loginUserSchema.js';
+// import { upload } from '../middleware/update.js';
 
 const router = Router();
 
@@ -29,7 +30,12 @@ router.post(
 );
 
 router.get('/current', authenticate, ctrlWrapper(getCurrentUserController));
-router.put('/update', authenticate, ctrlWrapper(updateUserController));
+router.put(
+  '/update',
+  authenticate,
+  //   upload.single('avatar'),
+  ctrlWrapper(updateUserController),
+);
 router.post(
   '/refresh-tokens',
   authenticate,

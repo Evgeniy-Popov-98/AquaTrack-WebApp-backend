@@ -9,7 +9,7 @@ const registerSchema = new mongoose.Schema({
   password: String,
 });
 
-registerSchema.methods.comparePassword = async function(candidatePassword) {
+registerSchema.methods.comparePassword = async function (candidatePassword) {
   return bcrypt.compare(candidatePassword, this.password);
 };
 

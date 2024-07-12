@@ -1,17 +1,28 @@
 import createHttpError from 'http-errors';
-import  User  from '../db/models/User.js';
+import User from '../db/models/User.js';
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = 'your_jwt_secret';
 
 export const authenticate = async (req, res, next) => {
-  // Отримуємо токен з заголовка Authorization
   const authHeader = req.headers['authorization'];
+
+  if (!authHeader) {
+    next(createHttpError(401, 'Please provide Authorization header'));
+    return;
+  }
+
+  const bearer = authHeader.split(' ')[0];
   const token = authHeader && authHeader.split(' ')[1];
 
   // Перевіряємо чи токен існує
-  if (!token) {
-    return next(createHttpError(401, 'Access token is missing'));
+  if (bearer !== 'Bearer' || !token) {
+    return next(
+      createHttpError(
+        401,
+        'There is no access token or the authentication header must be of type Bearer.',
+      ),
+    );
   }
 
   try {
@@ -21,15 +32,12 @@ export const authenticate = async (req, res, next) => {
     // Отримуємо користувача за ID, який міститься у токені
     const user = await User.findById(decoded.userId);
 
-    // Перевіряємо чи користувач знайдений
     if (!user) {
       return next(createHttpError(404, 'User not found'));
     }
 
-    // Додаємо користувача до об'єкту запиту
     req.user = user;
 
-    // Продовжуємо обробку запиту
     next();
   } catch (error) {
     // Перехоплюємо помилки від jwt.verify

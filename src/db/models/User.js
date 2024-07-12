@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
 const UserSchema = new Schema({
+    _id: mongoose.Types.ObjectId, // Optional, MongoDB will auto-generate _id if not provided explicitly
     userId: {
         type: Schema.Types.ObjectId,
         default: mongoose.Types.ObjectId,

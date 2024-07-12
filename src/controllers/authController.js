@@ -18,6 +18,14 @@ export const registerUser = async (req, res, next) => {
       data: userData,
     });
   } catch (error) {
+    if (error.code === 11000 && error.keyPattern && error.keyPattern.email === 1) {
+      // Помилка дублювання email
+      return res.status(409).json({
+        message: 'Email already in use',
+        error: error.message,
+      });
+    }
+    // Інші типи помилок
     next(error);
   }
 };

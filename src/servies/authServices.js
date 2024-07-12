@@ -1,6 +1,7 @@
 import createHttpError from 'http-errors';
 import registerUser from '../db/models/registerUser.js';
 import { Session } from '../db/models/Session.js';
+import User from '../db/models/User.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
@@ -26,7 +27,7 @@ export const registerUserService = async ({ name, email, password }) => {
 };
 
 export const loginUserService = async ({ email, password }) => {
-  const user = await registerUser.findOne({ email });
+  const user = await User.findOne({ email });
   if (!user || !(await bcrypt.compare(password, user.password))) {
     throw createHttpError(401, 'Invalid email or password');
   }
@@ -69,7 +70,7 @@ export const refreshSessionService = async (refreshToken) => {
   console.log('Decoded refresh token:', decoded);
 
   // Видалення старої сесії
-  const session = await Session.findOneAndDelete({ refreshToken });
+  const session = await User.findOneAndDelete({ refreshToken });
 
   if (!session || session.refreshTokenValidUntil < new Date()) {
     throw createHttpError(401, 'Invalid or expired refresh token');

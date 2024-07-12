@@ -1,4 +1,4 @@
-// User.js (або як називається ваш файл моделі користувача)
+// src\db\models\registerUser.js
 
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';

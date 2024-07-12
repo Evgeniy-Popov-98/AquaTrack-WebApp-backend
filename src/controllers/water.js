@@ -1,4 +1,4 @@
-import { createWater, patchWater } from '../services/water.js';
+import { createWater, deleteWater, patchWater } from '../services/water.js';
 import createHttpError from 'http-errors';
 
 export const createWaterController = async (req, res) => {
@@ -31,6 +31,25 @@ export const patchWaterController = async (req, res, next) => {
   res.json({
     status: 200,
     message: `Successfully patched a record about consumed amount of water!`,
-    data: result.contact,
+    data: result.water,
+  });
+};
+
+export const deleteWaterController = async (req, res, next) => {
+  const { idRecordWater } = req.params;
+  const water = await deleteWater(idRecordWater);
+
+  if (!water) {
+    next(
+      createHttpError(
+        404,
+        'The record about consumed amount of water not found',
+      ),
+    );
+    return;
+  }
+
+  res.status(204).send({
+    status: 204,
   });
 };

@@ -4,6 +4,7 @@ import { validateBody } from '../middlewares/validateBody.js';
 import { createWaterSchema, updateWaterSchema } from '../validation/water.js';
 import {
   createWaterController,
+  deleteWaterController,
   patchWaterController,
 } from '../controllers/water.js';
 
@@ -20,5 +21,7 @@ router.patch(
   validateBody(updateWaterSchema),
   ctrlWrapper(patchWaterController),
 );
+
+router.delete('/:idRecordWater', ctrlWrapper(deleteWaterController));
 
 export default router;

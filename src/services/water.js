@@ -18,3 +18,10 @@ export const patchWater = async (idRecordWater, payload, options = {}) => {
     isNew: Boolean(rawResult?.lastErrorObject?.upserted),
   };
 };
+
+export const deleteWater = async (idRecordWater) => {
+  const water = await WaterCollection.findOneAndDelete({
+    _id: idRecordWater,
+  });
+  return water;
+};

@@ -5,7 +5,7 @@ import { env } from './utils/env.js';
 import { ENV_VARS } from './constants/constants.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
-import waterConsumptionRoutes from '../src/routers/waterConsumptionRoutes.js';
+import waterConsumptionRoutes from './routers/waterConsumptionRoutes.js';
 
 
 

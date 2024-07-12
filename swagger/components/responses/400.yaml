@@ -1,0 +1,15 @@
+description: The input data does not match the validation scheme!
+content:
+  application/json:
+    schema:
+      type: object
+      required:
+        - status
+        - message
+      properties:
+        status:
+          type: integer
+          example: 400
+        message:
+          type: string
+          example: 'The input data does not match the validation scheme!'

@@ -1,8 +1,11 @@
 import { Router } from 'express';
 import { ctrlWrapper } from '../utils/ctrlWrapper.js';
 import { validateBody } from '../middlewares/validateBody.js';
-import { createWaterSchema } from '../validation/water.js';
-import { createWaterController } from '../controllers/water.js';
+import { createWaterSchema, updateWaterSchema } from '../validation/water.js';
+import {
+  createWaterController,
+  patchWaterController,
+} from '../controllers/water.js';
 
 const router = Router();
 
@@ -10,6 +13,12 @@ router.post(
   '/',
   validateBody(createWaterSchema),
   ctrlWrapper(createWaterController),
+);
+
+router.patch(
+  '/:idRecordWater',
+  validateBody(updateWaterSchema),
+  ctrlWrapper(patchWaterController),
 );
 
 export default router;

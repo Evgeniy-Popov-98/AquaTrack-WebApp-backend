@@ -36,8 +36,27 @@ const UserSchema = new Schema({
     },
     avatar: {
         type: String
+    } ,
+    accessToken: {
+        type: String,
+        default: '',
+      },
+      refreshToken: {
+        type: String,
+        default: '',
+      },
+      verification: {
+        type: Boolean,
+        default: false,
+      },
+      verificationToken: {
+        type: String,
+      },
+      resetPasswordToken: {
+        type: String,
+      },
     }
-});
+);
 
 const User = mongoose.model('User', UserSchema);
 

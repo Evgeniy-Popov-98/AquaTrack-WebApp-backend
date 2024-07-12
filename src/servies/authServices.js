@@ -4,6 +4,11 @@ import { Session } from '../db/models/Session.js';
 import User from '../db/models/User.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
+import { createAccessToken,
+  createRefreshToken,} from '../servies/jwtService.js';
+  import { HttpError } from '../middleware/HttpError.js';
+ 
+  
 
 const JWT_SECRET = 'your_jwt_secret';
 const JWT_ACCESS_EXPIRATION = '15m';
@@ -69,39 +74,37 @@ export const loginUserService = async ({ email, password }) => {
 
   return { accessToken, refreshToken };
 };
+export const refreshSessionService = async (userId) => {
+  try {
+    // Створення нових токенів доступу та оновлення
+    const newAccessToken = createAccessToken(userId);
+    const newRefreshToken = createRefreshToken(userId);
 
-export const refreshSessionService = async (refreshToken) => {
-  const decoded = jwt.verify(refreshToken, JWT_SECRET);
+    // Оновлення токенів у базі даних сесії користувача
+    await Session.findOneAndUpdate(
+      { userId },
+      {
+        accessToken: newAccessToken,
+        refreshToken: newRefreshToken,
+        accessTokenValidUntil: new Date(Date.now() + parseInt(process.env.JWT_ACC_EXPIRES_IN) * 1000),
+        refreshTokenValidUntil: new Date(Date.now() + parseInt(process.env.JWT_REF_EXPIRES_IN) * 1000),
+      },
+      { upsert: true }
+    );
 
-  console.log('Decoded refresh token:', decoded);
-
-  // Видалення старої сесії
-  const session = await User.findOneAndDelete({ refreshToken });
-
-  if (!session || session.refreshTokenValidUntil < new Date()) {
-    throw createHttpError(401, 'Invalid or expired refresh token');
+    return { accessToken: newAccessToken, newRefreshToken };
+  } catch (error) {
+    console.error(error);
+    throw new HttpError(500, 'Помилка під час оновлення токенів');
   }
-
-  const newAccessToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, {
-    expiresIn: JWT_ACCESS_EXPIRATION,
-  });
-  const newRefreshToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, {
-    expiresIn: JWT_REFRESH_EXPIRATION,
-  });
-
-  // Створення нової сесії
-  const newSession = new Session({
-    userId: decoded.userId,
-    accessToken: newAccessToken,
-    refreshToken: newRefreshToken,
-    accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000), // 15 хвилин
-    refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 днів
-  });
-
-  await newSession.save();
-
-  return { newAccessToken, newRefreshToken };
 };
+
+
+
+
+
+
+
 
 export const logoutUserService = async (refreshToken) => {
   const session = await Session.findOneAndDelete({ refreshToken });

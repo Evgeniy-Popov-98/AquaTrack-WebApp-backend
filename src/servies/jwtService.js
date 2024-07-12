@@ -1,3 +1,4 @@
+// src/servies/jwtService.js
 import jwt from 'jsonwebtoken';
 import { HttpError } from '../middleware/HttpError.js';
 

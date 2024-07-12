@@ -2,6 +2,7 @@ import express from 'express';
 import { registerUser, loginUser } from '../controllers/authController.js';
 import { getCurrentUserController, updateUserController, refreshTokensController, logoutUserController } from '../controllers/userController.js'; // Переконайтеся, що шлях відповідає вашій структурі проекту
 import { authenticate } from '../middleware/authMiddleware.js';
+import { upload } from '../middleware/update.js';
 
 const router = express.Router();
 
@@ -10,7 +11,7 @@ router.post('/register', registerUser);
 router.post('/login', loginUser);
 
 router.get('/current', authenticate, getCurrentUserController);
-router.put('/update', authenticate, updateUserController);
+router.put('/update', authenticate,upload.single('avatar'), updateUserController);
 router.post('/refresh-tokens', authenticate, refreshTokensController);
 router.post('/logout', authenticate, logoutUserController);
 

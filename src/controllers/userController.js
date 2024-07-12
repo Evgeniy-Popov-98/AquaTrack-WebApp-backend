@@ -18,7 +18,11 @@ export const getCurrentUserController = (req, res, next) => {
             _id: user._id,
             name: user.name,
             email: user.email,
-            // Додавайте інші поля користувача, які вам потрібні
+            gender: user.gender,
+            weight: user.weight,
+            activeSportsTime: user.activeSportsTime,
+            dailyWaterIntake: user.dailyWaterIntake,
+            avatar: user.avatar,
         };
 
         // Відправляємо користувача відповідь

@@ -32,8 +32,12 @@ export const loginUserService = async ({ email, password }) => {
     throw createHttpError(401, 'Invalid email or password');
   }
 
-  const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_ACCESS_EXPIRATION });
-  const refreshToken = jwt.sign({ userId: user._id }, JWT_SECRET, { expiresIn: JWT_REFRESH_EXPIRATION });
+  const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, {
+    expiresIn: JWT_ACCESS_EXPIRATION,
+  });
+  const refreshToken = jwt.sign({ userId: user._id }, JWT_SECRET, {
+    expiresIn: JWT_REFRESH_EXPIRATION,
+  });
 
   console.log('Generated tokens:', { accessToken, refreshToken });
 
@@ -44,7 +48,9 @@ export const loginUserService = async ({ email, password }) => {
     session.accessToken = accessToken;
     session.refreshToken = refreshToken;
     session.accessTokenValidUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 хвилин
-    session.refreshTokenValidUntil = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 днів
+    session.refreshTokenValidUntil = new Date(
+      Date.now() + 30 * 24 * 60 * 60 * 1000,
+    ); // 30 днів
   } else {
     // Видалення старої сесії, якщо вона існує
     await Session.findOneAndDelete({ userId: user._id });
@@ -76,8 +82,12 @@ export const refreshSessionService = async (refreshToken) => {
     throw createHttpError(401, 'Invalid or expired refresh token');
   }
 
-  const newAccessToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, { expiresIn: JWT_ACCESS_EXPIRATION });
-  const newRefreshToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, { expiresIn: JWT_REFRESH_EXPIRATION });
+  const newAccessToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, {
+    expiresIn: JWT_ACCESS_EXPIRATION,
+  });
+  const newRefreshToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, {
+    expiresIn: JWT_REFRESH_EXPIRATION,
+  });
 
   // Створення нової сесії
   const newSession = new Session({

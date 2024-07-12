@@ -1,8 +1,11 @@
 import createHttpError from 'http-errors';
-import { registerUserService, loginUserService } from '../servies/authServices.js';
+import {
+  registerUserService,
+  loginUserService,
+} from '../servies/authServices.js';
 
 // Реєстрація нового користувача
-export const registerUser = async (req, res, next) => {
+export const registerUserController = async (req, res, next) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
@@ -18,7 +21,11 @@ export const registerUser = async (req, res, next) => {
       data: userData,
     });
   } catch (error) {
-    if (error.code === 11000 && error.keyPattern && error.keyPattern.email === 1) {
+    if (
+      error.code === 11000 &&
+      error.keyPattern &&
+      error.keyPattern.email === 1
+    ) {
       // Помилка дублювання email
       return res.status(409).json({
         message: 'Email already in use',
@@ -31,7 +38,7 @@ export const registerUser = async (req, res, next) => {
 };
 
 // Логінізація користувача
-export const loginUser = async (req, res, next) => {
+export const loginUserController = async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password) {

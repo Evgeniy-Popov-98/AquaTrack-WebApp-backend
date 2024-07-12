@@ -49,7 +49,5 @@ export const deleteWaterController = async (req, res, next) => {
     return;
   }
 
-  res.status(204).send({
-    status: 204,
-  });
+  res.status(204).send();
 };

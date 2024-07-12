@@ -31,6 +31,6 @@ export const patchWaterController = async (req, res, next) => {
   res.json({
     status: 200,
     message: `Successfully patched a record about consumed amount of water!`,
-    data: result.contact,
+    data: result.water,
   });
 };

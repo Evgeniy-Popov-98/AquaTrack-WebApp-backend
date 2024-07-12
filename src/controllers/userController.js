@@ -1,6 +1,7 @@
 
 import createHttpError from 'http-errors';
 import { updateUserService } from '../servies/userService.js';
+import { saveFile} from '../cloudinary/saveFile.js';
 
 
 export const getCurrentUserController = (req, res, next) => {
@@ -41,8 +42,8 @@ export const updateUserController = async (req, res, next) => {
     try {
         let avatarUrl;
         if (req.file) {
-            const savedAvatar = await saveFile(req.file); // Зберігаємо аватар користувача
-            avatarUrl = savedAvatar;
+            const avatarUrl = await saveFile(req.file); // Зберігаємо аватар користувача
+            body.avatar = avatarUrl;
         }
 
         console.log('Received userId:', userId); // Логуємо userId для відстеження

@@ -1,14 +1,15 @@
 import { saveFileToLocalMachine } from '../utils/saveFileToUploadDir.js';
 import { uploadToCloudinary } from './cloudinary.js';
+import { env } from '../utils/env.js';
 
-export const saveFile = async (photo) => {
-  if (!photo) return undefined;
+export const saveFile = async (avatar) => {
+  if (!avatar) return undefined;
 
   let url;
-  if (process.env.IS_CLOUDINARY_ENABLED === 'true') {
-    url = await uploadToCloudinary(photo);
+  if (env.CLOUDINARY_ENABLED === 'true') {
+    url = await uploadToCloudinary(avatar);
   } else {
-    url = await saveFileToLocalMachine(photo);
+    url = await saveFileToLocalMachine(avatar);
   }
 
   return url;

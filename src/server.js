@@ -6,8 +6,9 @@ import cookieParser from 'cookie-parser';
 import { env } from './utils/env.js';
 import { ENV_VARS } from './constants/constants.js';
 
-import { notFoundHandler } from './middleware/notFoundHandler.js';
-import { errorHandler } from './middleware/errorHandler.js';
+import { notFoundHandler } from './middlewares/notFoundHandler.js';
+import { errorHandler } from './middlewares/errorHandler.js';
+import rootRouter from './routers/index.js';
 
 export const setupServer = () => {
   const app = express();
@@ -30,6 +31,8 @@ export const setupServer = () => {
       limit: '1mb',
     }),
   );
+
+  app.use(rootRouter);
 
   app.use('*', notFoundHandler);
 

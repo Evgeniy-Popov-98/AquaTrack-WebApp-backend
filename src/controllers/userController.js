@@ -1,6 +1,6 @@
 
 import createHttpError from 'http-errors';
-import { updateUserService, refreshTokensService, logoutUserService,decodeToken  } from '../servies/userService.js';
+import { updateUserService } from '../servies/userService.js';
 
 
 export const getCurrentUserController = (req, res, next) => {
@@ -28,22 +28,36 @@ export const getCurrentUserController = (req, res, next) => {
     }
 };
   
-export const updateUserController = async (req, res) => {
+
+
+export const updateUserController = async (req, res, next) => {
+    const { body } = req;
+    const userId = req.user._id; // Отримуємо userId поточного користувача з req.user._id
+
     try {
-        console.log('Запит на оновлення інформації про користувача');
-        const userId = decodeToken(req.headers.authorization.split(' ')[1]);
-        console.log('Отриманий userId з токену для оновлення:', userId);
-        const userData = req.body;
-        console.log('Отримані дані користувача для оновлення:', userData);
-        const avatarFile = req.file;
-        console.log('Отриманий файл аватару:', avatarFile);
-        const updatedUser = await updateUserService(userId, userData, avatarFile);
-        res.status(200).json(updatedUser);
+        let avatarUrl;
+        if (req.file) {
+            const savedAvatar = await saveFile(req.file); // Зберігаємо аватар користувача
+            avatarUrl = savedAvatar;
+        }
+
+        console.log('Received userId:', userId); // Логуємо userId для відстеження
+        const updatedUser = await updateUserService(userId, body, avatarUrl); // Оновлюємо користувача через сервіс
+
+        // Видаляємо чутливі поля з відповіді
+        delete updatedUser.password;
+        delete updatedUser.__v;
+
+        res.status(200).json({
+            status: 200,
+            message: 'User updated successfully',
+            data: updatedUser,
+        });
     } catch (error) {
-        console.error('Помилка в контролері оновлення інформації про користувача:', error);
-        res.status(500).json({ message: 'Помилка при оновленні інформації про користувача' });
+        next(error);
     }
 };
+
 
 // Контролер для оновлення токенів
 export const refreshTokensController = async (req, res) => {

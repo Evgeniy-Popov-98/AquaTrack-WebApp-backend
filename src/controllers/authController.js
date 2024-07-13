@@ -1,8 +1,10 @@
-import createHttpError from 'http-errors';
+
 
 import {
   registerUserService,
   loginUserService,
+  resetPassword,
+  sendResetPasswordEmail
 } from '../servies/authServices.js';
 import { REFRESH_TOKEN_LIFE_TIME } from '../constants/constants.js';
 
@@ -41,5 +43,27 @@ export const loginUserController = async (req, res, next) => {
     status: 200,
     message: 'Successfully logged in a user!',
     data: { accessToken: session.accessToken },
+  });
+};
+
+
+export const sendResetPasswordEmailController = async (req, res) => {
+  await sendResetPasswordEmail(req.body.email);
+
+  res.json({
+    status: 200,
+    message: 'Reset password email was successfully sent!',
+    data: {},
+  });
+};
+
+
+export const resetPasswordController = async (req, res) => {
+  await resetPassword(req.body);
+
+  res.json({
+    status: 200,
+    message: 'Password was successfully reset!',
+    data: {},
   });
 };

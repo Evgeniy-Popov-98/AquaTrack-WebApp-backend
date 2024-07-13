@@ -5,6 +5,9 @@ export const ENV_VARS = {
   MONGODB_PASSWORD: 'MONGODB_PASSWORD',
   MONGODB_URL: 'MONGODB_URL',
   MONGODB_DB: 'MONGODB_DB',
+  FRONTEND_HOST: 'FRONTEND_HOST',
+  BACKEND_HOST: 'BACKEND_HOST',
+  JWT_SECRET: 'JWT_SECRET',
 };
 
 // export const TEMPLATES_DIR = path.join(process.cwd(), 'src', 'templates');
@@ -27,3 +30,12 @@ export const CLOUDINARY = {
 export const ACCESS_TOKEN_LIFE_TIME = 15 * 60 * 1000;
 
 export const REFRESH_TOKEN_LIFE_TIME = 30 * 24 * 60 * 60 * 1000;
+
+
+export const SMTP = {
+  SMTP_HOST: 'SMTP_HOST',
+  SMTP_PORT: 'SMTP_PORT',
+  SMTP_USER: 'SMTP_USER',
+  SMTP_PASSWORD: 'SMTP_PASSWORD',
+  SMTP_FROM: 'SMTP_FROM',
+};

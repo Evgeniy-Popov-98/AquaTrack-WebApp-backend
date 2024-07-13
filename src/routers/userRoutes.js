@@ -4,6 +4,8 @@ import { validateBody } from '../middleware/validateBody.js';
 import {
   registerUserController,
   loginUserController,
+  sendResetPasswordEmailController,
+  resetPasswordController,
 } from '../controllers/authController.js';
 import {
   getCurrentUserController,
@@ -12,7 +14,7 @@ import {
   logoutUserController,
 } from '../controllers/userController.js';
 // import { authenticate } from '../middleware/authMiddleware.js';
-import { registerUserSchema } from '../validation/registerUserSchema.js';
+import { registerUserSchema, requestResetEmailSchema, resetPasswordSchema } from '../validation/registerUserSchema.js';
 import { loginUserSchema } from '../validation/loginUserSchema.js';
 import { userSchema } from '../validation/userSchema.js';
 import { upload } from '../middleware/update.js';
@@ -54,4 +56,15 @@ router.post(
 // router.post('/logout', authenticate, ctrlWrapper(logoutUserController));
 router.post('/logout', ctrlWrapper(logoutUserController));
 
+
+router.post('/send-reset-email',
+  validateBody(requestResetEmailSchema),
+  ctrlWrapper(sendResetPasswordEmailController),);
+
+
+
+router.post(
+'/reset-password',
+validateBody(resetPasswordSchema),
+ctrlWrapper(resetPasswordController),);
 export default router;

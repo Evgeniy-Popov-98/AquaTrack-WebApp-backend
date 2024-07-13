@@ -3,7 +3,7 @@ import createHttpError from 'http-errors';
 import { updateUserService } from '../servies/userService.js';
 import {refreshSessionService, logoutUserService} from '../servies/authServices.js';
 import { saveFile} from '../cloudinary/saveFile.js';
-import User from '../db/models/User.js';
+
 
 export const getCurrentUserController = (req, res, next) => {
     try {
@@ -66,34 +66,22 @@ export const updateUserController = async (req, res, next) => {
 
 
 
-export const refreshTokensController = async (req, res, next) => {
-    console.log('refreshTokensController: початок обробки оновлення токенів');
-  
-    const { refreshToken } = req.body;
+export const refreshTokensController  = async (req, res, next) => {
+    const { refreshToken } = req.cookies;
   
     if (!refreshToken) {
-      return next(createHttpError(400, 'Токен оновлення відсутній'));
+      return next(createHttpError(400, 'Refresh token is required'));
     }
   
     try {
-      // Валідація та отримання ID з токену оновлення
-      const userId = refreshSessionService(refreshToken);
+      const { newAccessToken, newRefreshToken } = await refreshSessionService(refreshToken);
   
-      // Отримання користувача з бази даних за userId
-      const user = await User.findById(userId);
+      res.cookie('refreshToken', newRefreshToken, { httpOnly: true, secure: true });
   
-      if (!user) {
-        throw createHttpError(401, 'Користувача не знайдено');
-      }
-  
-      // Оновлення токенів доступу та оновлення
-      const { accessToken, newRefreshToken } = await refreshSessionService(userId);
-  
-      // Надсилання нових токенів у відповідь
       res.status(200).json({
         status: 200,
-        message: 'Успішно оновлено сесію!',
-        data: { accessToken, refreshToken: newRefreshToken },
+        message: 'Successfully refreshed a session!',
+        data: { accessToken: newAccessToken },
       });
     } catch (error) {
       next(error);
@@ -101,17 +89,22 @@ export const refreshTokensController = async (req, res, next) => {
   };
 
 
-export const logoutUserController = async (req, res) => {
-    try {
-        console.log('Запит на вихід користувача');
-        const { refreshToken } = req.body; // Отримуємо refreshToken з тіла запиту
-        console.log('Отриманий refreshToken для виходу:', refreshToken);
-        
-        await logoutUserService(refreshToken); // Викликаємо сервіс для виходу користувача
 
-        res.status(200).json({ message: 'Користувач вийшов успішно' });
-    } catch (error) {
-        console.error('Помилка в контролері виходу користувача:', error);
-        res.status(500).json({ message: 'Помилка при виході користувача' });
+
+  export const logoutUserController = async (req, res, next) => {
+    const refreshToken = req.cookies.refreshToken;
+  
+    if (!refreshToken) {
+      return next(createHttpError(400, 'Refresh token is required'));
     }
-};
+  
+    try {
+      await logoutUserService(refreshToken);
+  
+      res.clearCookie('refreshToken');
+  
+      res.status(204).send();
+    } catch (error) {
+      next(error);
+    }
+  };

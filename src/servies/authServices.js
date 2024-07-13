@@ -4,9 +4,7 @@ import { Session } from '../db/models/Session.js';
 import User from '../db/models/User.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
-import { createAccessToken,
-  createRefreshToken,} from '../servies/jwtService.js';
-  import { HttpError } from '../middleware/HttpError.js';
+
  
   
 
@@ -74,34 +72,32 @@ export const loginUserService = async ({ email, password }) => {
 
   return { accessToken, refreshToken };
 };
-export const refreshSessionService = async (userId) => {
-  try {
-    // Створення нових токенів доступу та оновлення
-    const newAccessToken = createAccessToken(userId);
-    const newRefreshToken = createRefreshToken(userId);
 
-    // Оновлення токенів у базі даних сесії користувача
-    await Session.findOneAndUpdate(
-      { userId },
-      {
-        accessToken: newAccessToken,
-        refreshToken: newRefreshToken,
-        accessTokenValidUntil: new Date(Date.now() + parseInt(process.env.JWT_ACC_EXPIRES_IN) * 1000),
-        refreshTokenValidUntil: new Date(Date.now() + parseInt(process.env.JWT_REF_EXPIRES_IN) * 1000),
-      },
-      { upsert: true }
-    );
 
-    return { accessToken: newAccessToken, newRefreshToken };
-  } catch (error) {
-    console.error(error);
-    throw new HttpError(500, 'Помилка під час оновлення токенів');
+
+export const refreshSessionService = async (refreshToken) => {
+  const decoded = jwt.verify(refreshToken, JWT_SECRET);
+  const session = await Session.findOneAndDelete({ refreshToken });
+
+  if (!session || session.refreshTokenValidUntil < new Date()) {
+    throw createHttpError(401, 'Invalid or expired refresh token');
   }
+
+  const newAccessToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, { expiresIn: JWT_ACCESS_EXPIRATION });
+  const newRefreshToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, { expiresIn: JWT_REFRESH_EXPIRATION });
+
+  const newSession = new Session({
+    userId: decoded.userId,
+    accessToken: newAccessToken,
+    refreshToken: newRefreshToken,
+    accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
+    refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+  });
+
+  await newSession.save();
+
+  return { newAccessToken, newRefreshToken };
 };
-
-
-
-
 
 
 

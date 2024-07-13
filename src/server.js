@@ -2,13 +2,14 @@ import express from 'express';
 import pino from 'pino-http';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import 'dotenv/config';
 
+import rootRouter from './routers/index.js';
 import { env } from './utils/env.js';
 import { ENV_VARS } from './constants/constants.js';
 
-import { notFoundHandler } from './middlewares/notFoundHandler.js';
-import { errorHandler } from './middlewares/errorHandler.js';
-import rootRouter from './routers/index.js';
+import { errorHandler } from './middleware/errorHandler.js';
+import { notFoundHandler } from './middleware/notFoundHandler.js';
 
 export const setupServer = () => {
   const app = express();

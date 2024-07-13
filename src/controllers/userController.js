@@ -47,7 +47,7 @@ export const updateUserController = async (req, res, next) => {
     avatarUrl = await saveFile(avatar);
     updatedUser = await updateUserService(userId, {
       ...body,
-      photo: avatarUrl,
+      avatar: avatarUrl,
     });
 
     res.status(200).json({

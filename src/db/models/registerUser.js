@@ -1,12 +1,10 @@
-// src\db\models\registerUser.js
-
 import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const registerSchema = new mongoose.Schema({
-  name: String,
-  email: { type: String, unique: true },
-  password: String,
+  name: { type: String, require: true },
+  email: { type: String, require: true, unique: true },
+  password: { type: String, require: true },
 });
 
 registerSchema.methods.comparePassword = async function (candidatePassword) {

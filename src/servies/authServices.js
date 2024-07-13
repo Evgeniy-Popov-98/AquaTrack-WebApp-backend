@@ -5,8 +5,20 @@ import User from '../db/models/User.js';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
- 
-  
+import { randomBytes } from 'crypto';
+import {
+  ACCESS_TOKEN_LIFE_TIME,
+  REFRESH_TOKEN_LIFE_TIME,
+} from '../constants/constants.js';
+
+const createSession = () => {
+  return {
+    accessToken: randomBytes(30).toString('base64'),
+    refreshToken: randomBytes(30).toString('base64'),
+    accessTokenValidUntil: new Date(Date.now() + ACCESS_TOKEN_LIFE_TIME),
+    refreshTokenValidUntil: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
+  };
+};
 
 const JWT_SECRET = 'your_jwt_secret';
 const JWT_ACCESS_EXPIRATION = '15m';
@@ -14,12 +26,15 @@ const JWT_REFRESH_EXPIRATION = '30d';
 
 export const registerUserService = async ({ name, email, password }) => {
   const existingUser = await registerUser.findOne({ email });
+
   if (existingUser) {
     throw createHttpError(409, 'Email already in use');
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
+
   const newUser = new registerUser({ name, email, password: hashedPassword });
+
   await newUser.save();
 
   const userData = newUser.toObject ? newUser.toObject() : newUser;
@@ -35,45 +50,19 @@ export const loginUserService = async ({ email, password }) => {
     throw createHttpError(401, 'Invalid email or password');
   }
 
-  const accessToken = jwt.sign({ userId: user._id }, JWT_SECRET, {
-    expiresIn: JWT_ACCESS_EXPIRATION,
-  });
-  const refreshToken = jwt.sign({ userId: user._id }, JWT_SECRET, {
-    expiresIn: JWT_REFRESH_EXPIRATION,
-  });
+  const isEqual = await bcrypt.compare(password, user.password);
 
-  console.log('Generated tokens:', { accessToken, refreshToken });
-
-  // Перевірка існуючої сесії
-  let session = await Session.findOne({ userId: user._id });
-  if (session) {
-    // Оновлення існуючої сесії
-    session.accessToken = accessToken;
-    session.refreshToken = refreshToken;
-    session.accessTokenValidUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 хвилин
-    session.refreshTokenValidUntil = new Date(
-      Date.now() + 30 * 24 * 60 * 60 * 1000,
-    ); // 30 днів
-  } else {
-    // Видалення старої сесії, якщо вона існує
-    await Session.findOneAndDelete({ userId: user._id });
-
-    // Створення нової сесії
-    session = new Session({
-      userId: user._id,
-      accessToken,
-      refreshToken,
-      accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000), // 15 хвилин
-      refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 днів
-    });
+  if (!isEqual) {
+    throw createHttpError(401, 'Unauthorized');
   }
 
-  await session.save();
+  await Session.deleteOne({ userId: user._id });
 
-  return { accessToken, refreshToken };
+  return await Session.create({
+    userId: user._id,
+    ...createSession(),
+  });
 };
-
-
 
 export const refreshSessionService = async (refreshToken) => {
   const decoded = jwt.verify(refreshToken, JWT_SECRET);
@@ -83,8 +72,12 @@ export const refreshSessionService = async (refreshToken) => {
     throw createHttpError(401, 'Invalid or expired refresh token');
   }
 
-  const newAccessToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, { expiresIn: JWT_ACCESS_EXPIRATION });
-  const newRefreshToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, { expiresIn: JWT_REFRESH_EXPIRATION });
+  const newAccessToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, {
+    expiresIn: JWT_ACCESS_EXPIRATION,
+  });
+  const newRefreshToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, {
+    expiresIn: JWT_REFRESH_EXPIRATION,
+  });
 
   const newSession = new Session({
     userId: decoded.userId,
@@ -98,9 +91,6 @@ export const refreshSessionService = async (refreshToken) => {
 
   return { newAccessToken, newRefreshToken };
 };
-
-
-
 
 export const logoutUserService = async (refreshToken) => {
   const session = await Session.findOneAndDelete({ refreshToken });

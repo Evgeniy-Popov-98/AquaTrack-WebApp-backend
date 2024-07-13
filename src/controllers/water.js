@@ -1,4 +1,4 @@
-import { createWater, deleteWater, patchWater } from '../services/water.js';
+import { createWater, deleteWater, patchWater } from '../servies/water.js';
 import createHttpError from 'http-errors';
 
 export const createWaterController = async (req, res) => {

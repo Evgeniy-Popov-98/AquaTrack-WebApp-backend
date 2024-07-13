@@ -1,6 +1,6 @@
-import { saveFileToLocalMachine } from '../utils/saveFileToUploadDir.js';
+import { saveFileToLocalMachine } from '../saveFileToUploadDir.js';
 import { uploadToCloudinary } from './cloudinary.js';
-import { env } from '../utils/env.js';
+import { env } from '../env.js';
 
 export const saveFile = async (avatar) => {
   if (!avatar) return undefined;

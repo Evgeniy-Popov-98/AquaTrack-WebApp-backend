@@ -2,15 +2,23 @@ import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
 
 const registerSchema = new mongoose.Schema({
-  name: { type: String, require: true },
-  email: { type: String, require: true, unique: true },
-  password: { type: String, require: true },
+  email: { type: String, required: true, unique: true },
+  password: { type: String, required: true },
 });
 
-registerSchema.methods.comparePassword = async function (candidatePassword) {
-  return bcrypt.compare(candidatePassword, this.password);
-};
+// Додаткові налаштування, наприклад, хешування пароля перед збереженням
+registerSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) return next();
 
-const registerUser = mongoose.model('user', registerSchema);
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (error) {
+    next(error);
+  }
+});
 
-export default registerUser;
+const RegisterUser = mongoose.model('Users', registerSchema);
+
+export default RegisterUser;

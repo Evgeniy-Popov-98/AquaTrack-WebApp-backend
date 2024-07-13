@@ -5,8 +5,8 @@ import User from '../db/models/User.js';
 import bcrypt from 'bcrypt';
 import { ENV_VARS } from '../constants/constants.js';
 import jwt from 'jsonwebtoken';
-import {env} from '../utils/env.js';
-import {TEMPLATES_UPLOAD_DIR} from '../constants/constants.js';
+import { env } from '../utils/env.js';
+import { TEMPLATES_UPLOAD_DIR } from '../constants/constants.js';
 import fs from 'node:fs/promises';
 import Handlebars from 'handlebars';
 import path from 'node:path';
@@ -15,7 +15,7 @@ import {
   ACCESS_TOKEN_LIFE_TIME,
   REFRESH_TOKEN_LIFE_TIME,
 } from '../constants/constants.js';
-import { sendMail } from '../utils/sendMail.js';
+// import { sendMail } from '../utils/sendMail.js';
 
 const createSession = () => {
   return {
@@ -25,7 +25,6 @@ const createSession = () => {
     refreshTokenValidUntil: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
   };
 };
-
 
 export const registerUserService = async ({ name, email, password }) => {
   const existingUser = await registerUser.findOne({ email });
@@ -95,7 +94,6 @@ export const logoutUserService = async ({ sessionId, refreshToken }) => {
   }
 };
 
-
 export const sendResetPasswordEmail = async (email) => {
   const user = await User.findOne({ email });
 
@@ -126,12 +124,12 @@ export const sendResetPasswordEmail = async (email) => {
   });
 
   try {
-    await sendMail({
-      html,
-      to: email,
-      from: env(ENV_VARS.SMTP_FROM),
-      subject: 'Reset your password!',
-    });
+    // await sendMail({
+    //   html,
+    //   to: email,
+    //   from: env(ENV_VARS.SMTP_FROM),
+    //   subject: 'Reset your password!',
+    // });
   } catch (err) {
     console.log(err);
     throw createHttpError(500, 'Problem with sending emails');

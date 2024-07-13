@@ -92,8 +92,11 @@ export const refreshSessionService = async (refreshToken) => {
   return { newAccessToken, newRefreshToken };
 };
 
-export const logoutUserService = async (refreshToken) => {
-  const session = await Session.findOneAndDelete({ refreshToken });
+export const logoutUserService = async ({ sessionId, refreshToken }) => {
+  const session = await Session.findOneAndDelete({
+    _id: sessionId,
+    refreshToken,
+  });
 
   if (!session) {
     throw createHttpError(401, 'Session not found');

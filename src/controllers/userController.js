@@ -1,38 +1,25 @@
 import createHttpError from 'http-errors';
-import { updateUserService } from '../servies/userService.js';
+import { getUser, updateUserService } from '../servies/userService.js';
 import {
   refreshSessionService,
   logoutUserService,
 } from '../servies/authServices.js';
 import { saveFile } from '../utils/cloudinary/saveFile.js';
 
-export const getCurrentUserController = (req, res, next) => {
-  try {
-    // Отримуємо користувача з об'єкта req, який був попередньо заповнений middleware authenticate
-    const user = req.user;
+export const getCurrentUserController = async (req, res, next) => {
+  const userId = req.params;
 
-    // Перевіряємо, що користувач знайдений
-    if (!user) {
-      throw createHttpError(401, 'User not authenticated');
-    }
+  const user = await getUser(userId);
 
-    // Створюємо новий об'єкт користувача без чутливих даних
-    const sanitizedUser = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      gender: user.gender,
-      weight: user.weight,
-      activeSportsTime: user.activeSportsTime,
-      dailyWaterIntake: user.dailyWaterIntake,
-      avatar: user.avatar,
-    };
-
-    // Відправляємо користувача відповідь
-    res.status(200).json({ user: sanitizedUser });
-  } catch (error) {
-    next(error);
+  if (!user) {
+    throw createHttpError(404, { message: 'User not found' });
   }
+
+  res.json({
+    status: 200,
+    message: 'Successfully found user!',
+    data: user,
+  });
 };
 
 export const updateUserController = async (req, res, next) => {
@@ -91,19 +78,17 @@ export const refreshTokensController = async (req, res, next) => {
 };
 
 export const logoutUserController = async (req, res, next) => {
+  const sessionId = req.cookies.sessionId;
   const refreshToken = req.cookies.refreshToken;
 
-  if (!refreshToken) {
-    return next(createHttpError(400, 'Refresh token is required'));
-  }
+  //   if (!refreshToken) {
+  //     return next(createHttpError(400, 'Refresh token is required'));
+  //   }
 
-  try {
-    await logoutUserService(refreshToken);
+  await logoutUserService({ sessionId, refreshToken });
 
-    res.clearCookie('refreshToken');
+  res.clearCookie('sessionId');
+  res.clearCookie('refreshToken');
 
-    res.status(204).send();
-  } catch (error) {
-    next(error);
-  }
+  res.status(204).send();
 };

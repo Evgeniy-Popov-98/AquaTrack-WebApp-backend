@@ -1,5 +1,7 @@
 import createHttpError from 'http-errors';
 import User from '../db/models/User.js';
+import { Session } from '../db/models/Session.js';
+
 import jwt from 'jsonwebtoken';
 
 const JWT_SECRET = 'your_jwt_secret';

@@ -23,24 +23,33 @@ router.post(
   validateBody(registerUserSchema),
   ctrlWrapper(registerUserController),
 );
+
 router.post(
   '/login',
   validateBody(loginUserSchema),
   ctrlWrapper(loginUserController),
 );
 
-router.get('/current', authenticate, ctrlWrapper(getCurrentUserController));
+router.get(
+  '/:userId',
+  //   authenticate,
+  ctrlWrapper(getCurrentUserController),
+);
+
 router.put(
   '/update',
   authenticate,
   //   upload.single('avatar'),
   ctrlWrapper(updateUserController),
 );
+
 router.post(
   '/refresh-tokens',
   authenticate,
   ctrlWrapper(refreshTokensController),
 );
-router.post('/logout', authenticate, ctrlWrapper(logoutUserController));
+
+// router.post('/logout', authenticate, ctrlWrapper(logoutUserController));
+router.post('/logout', ctrlWrapper(logoutUserController));
 
 export default router;

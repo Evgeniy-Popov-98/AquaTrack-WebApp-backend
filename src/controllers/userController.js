@@ -5,6 +5,19 @@ import {
   logoutUserService,
 } from '../servies/authServices.js';
 import { saveFile } from '../utils/cloudinary/saveFile.js';
+import { REFRESH_TOKEN_LIFE_TIME } from '../constants/constants.js';
+
+const setupSession = (res, session) => {
+  res.cookie('sessionId', session._id, {
+    httpOnly: true,
+    expires: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
+  });
+
+  res.cookie('refreshToken', session.refreshToken, {
+    httpOnly: true,
+    expires: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
+  });
+};
 
 export const getCurrentUserController = async (req, res, next) => {
   const userId = req.params;
@@ -51,30 +64,20 @@ export const updateUserController = async (req, res, next) => {
 };
 
 export const refreshTokensController = async (req, res, next) => {
-  const { refreshToken } = req.cookies;
+  const { sessionId, refreshToken } = req.cookies;
 
-  if (!refreshToken) {
-    return next(createHttpError(400, 'Refresh token is required'));
-  }
+  const session = await refreshSessionService({
+    sessionId,
+    refreshToken,
+  });
 
-  try {
-    const { newAccessToken, newRefreshToken } = await refreshSessionService(
-      refreshToken,
-    );
+  setupSession(res, session);
 
-    res.cookie('refreshToken', newRefreshToken, {
-      httpOnly: true,
-      secure: true,
-    });
-
-    res.status(200).json({
-      status: 200,
-      message: 'Successfully refreshed a session!',
-      data: { accessToken: newAccessToken },
-    });
-  } catch (error) {
-    next(error);
-  }
+  res.status(200).json({
+    status: 200,
+    message: 'Successfully refreshed a session!',
+    data: { accessToken: session.accessToken },
+  });
 };
 
 export const logoutUserController = async (req, res, next) => {

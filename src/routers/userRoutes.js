@@ -45,7 +45,7 @@ router.put(
 
 router.post(
   '/refresh-tokens',
-  authenticate,
+  //   authenticate,
   ctrlWrapper(refreshTokensController),
 );
 

@@ -64,32 +64,21 @@ export const loginUserService = async ({ email, password }) => {
   });
 };
 
-export const refreshSessionService = async (refreshToken) => {
-  const decoded = jwt.verify(refreshToken, JWT_SECRET);
+export const refreshSessionService = async ({ sessionId, refreshToken }) => {
   const session = await Session.findOneAndDelete({ refreshToken });
+
+  if (!session) throw createHttpError(401, 'Session not found');
 
   if (!session || session.refreshTokenValidUntil < new Date()) {
     throw createHttpError(401, 'Invalid or expired refresh token');
   }
 
-  const newAccessToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, {
-    expiresIn: JWT_ACCESS_EXPIRATION,
-  });
-  const newRefreshToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, {
-    expiresIn: JWT_REFRESH_EXPIRATION,
-  });
+  await Session.deleteOne({ _id: sessionId });
 
-  const newSession = new Session({
-    userId: decoded.userId,
-    accessToken: newAccessToken,
-    refreshToken: newRefreshToken,
-    accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
-    refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
+  return await Session.create({
+    userId: session.userId,
+    ...createSession(),
   });
-
-  await newSession.save();
-
-  return { newAccessToken, newRefreshToken };
 };
 
 export const logoutUserService = async ({ sessionId, refreshToken }) => {

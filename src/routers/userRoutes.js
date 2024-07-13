@@ -11,10 +11,11 @@ import {
   refreshTokensController,
   logoutUserController,
 } from '../controllers/userController.js';
-import { authenticate } from '../middleware/authMiddleware.js';
+// import { authenticate } from '../middleware/authMiddleware.js';
 import { registerUserSchema } from '../validation/registerUserSchema.js';
 import { loginUserSchema } from '../validation/loginUserSchema.js';
-// import { upload } from '../middleware/update.js';
+import { userSchema } from '../validation/userSchema.js';
+import { upload } from '../middleware/update.js';
 
 const router = Router();
 
@@ -36,10 +37,11 @@ router.get(
   ctrlWrapper(getCurrentUserController),
 );
 
-router.put(
-  '/update',
-  authenticate,
-  //   upload.single('avatar'),
+router.patch(
+  '/:userId',
+  //   authenticate,
+  validateBody(userSchema),
+  upload.single('avatar'),
   ctrlWrapper(updateUserController),
 );
 

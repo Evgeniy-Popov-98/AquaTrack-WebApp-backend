@@ -37,30 +37,37 @@ export const getCurrentUserController = async (req, res, next) => {
 
 export const updateUserController = async (req, res, next) => {
   const { body } = req;
-  const userId = req.user._id; // Отримуємо userId поточного користувача з req.user._id
+  const { userId } = req.params;
+  const avatar = req.file;
 
-  try {
-    let avatarUrl;
-    if (req.file) {
-      const avatarUrl = await saveFile(req.file); // Зберігаємо аватар користувача
-      body.avatar = avatarUrl;
-    }
+  let avatarUrl;
+  let updatedUser;
 
-    console.log('Received userId:', userId); // Логуємо userId для відстеження
-    const updatedUser = await updateUserService(userId, body, avatarUrl); // Оновлюємо користувача через сервіс
-
-    // Видаляємо чутливі поля з відповіді
-    delete updatedUser.password;
-    delete updatedUser.__v;
+  if (avatar) {
+    avatarUrl = await saveFile(avatar);
+    updatedUser = await updateUserService(userId, {
+      ...body,
+      photo: avatarUrl,
+    });
 
     res.status(200).json({
       status: 200,
       message: 'User updated successfully',
       data: updatedUser,
     });
-  } catch (error) {
-    next(error);
   }
+
+  updatedUser = await updateUserService(userId, { ...body });
+
+  if (!updatedUser) {
+    throw createHttpError(404, { message: 'User not found' });
+  }
+
+  res.status(200).json({
+    status: 200,
+    message: 'User updated successfully',
+    data: updatedUser,
+  });
 };
 
 export const refreshTokensController = async (req, res, next) => {

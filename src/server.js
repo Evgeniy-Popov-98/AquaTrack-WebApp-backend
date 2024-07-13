@@ -9,7 +9,7 @@ import { env } from './utils/env.js';
 import { ENV_VARS } from './constants/constants.js';
 
 import { errorHandler } from './middleware/errorHandler.js';
-import { notFoundHandler } from './middlewares/notFoundHandler.js';
+import { notFoundHandler } from './middleware/notFoundHandler.js';
 
 export const setupServer = () => {
   const app = express();

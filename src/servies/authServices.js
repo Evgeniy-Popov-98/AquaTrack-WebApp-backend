@@ -44,29 +44,14 @@ export const loginUserService = async ({ email, password }) => {
 
   console.log('Generated tokens:', { accessToken, refreshToken });
 
-  // Перевірка існуючої сесії
-  let session = await Session.findOne({ userId: user._id });
-  if (session) {
-    // Оновлення існуючої сесії
-    session.accessToken = accessToken;
-    session.refreshToken = refreshToken;
-    session.accessTokenValidUntil = new Date(Date.now() + 15 * 60 * 1000); // 15 хвилин
-    session.refreshTokenValidUntil = new Date(
-      Date.now() + 30 * 24 * 60 * 60 * 1000,
-    ); // 30 днів
-  } else {
-    // Видалення старої сесії, якщо вона існує
-    await Session.findOneAndDelete({ userId: user._id });
-
-    // Створення нової сесії
-    session = new Session({
-      userId: user._id,
-      accessToken,
-      refreshToken,
-      accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000), // 15 хвилин
-      refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 днів
-    });
-  }
+  // Створення нової сесії
+  const session = new Session({
+    userId: user._id,
+    accessToken,
+    refreshToken,
+    accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000), // 15 хвилин
+    refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 днів
+  });
 
   await session.save();
 
@@ -77,24 +62,25 @@ export const loginUserService = async ({ email, password }) => {
 
 export const refreshSessionService = async (refreshToken) => {
   const decoded = jwt.verify(refreshToken, JWT_SECRET);
-  const session = await Session.findOneAndDelete({ refreshToken });
-
-  if (!session || session.refreshTokenValidUntil < new Date()) {
-    throw createHttpError(401, 'Invalid or expired refresh token');
-  }
 
   const newAccessToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, { expiresIn: JWT_ACCESS_EXPIRATION });
   const newRefreshToken = jwt.sign({ userId: decoded.userId }, JWT_SECRET, { expiresIn: JWT_REFRESH_EXPIRATION });
 
-  const newSession = new Session({
-    userId: decoded.userId,
-    accessToken: newAccessToken,
-    refreshToken: newRefreshToken,
-    accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000), // 15 minutes
-    refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days
-  });
+  // Оновлення існуючої сесії
+  const updatedSession = await Session.findOneAndUpdate(
+    { userId: decoded.userId },
+    {
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+      accessTokenValidUntil: new Date(Date.now() + 15 * 60 * 1000), // 15 хвилин
+      refreshTokenValidUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 днів
+    },
+    { new: true } // Параметр `new: true` поверне оновлену сесію після оновлення
+  );
 
-  await newSession.save();
+  if (!updatedSession) {
+    throw createHttpError(401, 'Invalid or expired refresh token');
+  }
 
   return { newAccessToken, newRefreshToken };
 };

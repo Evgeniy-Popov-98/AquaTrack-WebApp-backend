@@ -66,29 +66,27 @@ export const updateUserController = async (req, res, next) => {
 
 
 
-export const refreshTokensController  = async (req, res, next) => {
-    const { refreshToken } = req.cookies;
-  
-    if (!refreshToken) {
-      return next(createHttpError(400, 'Refresh token is required'));
-    }
-  
-    try {
-      const { newAccessToken, newRefreshToken } = await refreshSessionService(refreshToken);
-  
-      res.cookie('refreshToken', newRefreshToken, { httpOnly: true, secure: true });
-  
-      res.status(200).json({
-        status: 200,
-        message: 'Successfully refreshed a session!',
-        data: { accessToken: newAccessToken },
-      });
-    } catch (error) {
-      next(error);
-    }
-  };
+export const refreshTokensController = async (req, res, next) => {
+  const { refreshToken } = req.cookies;
 
+  if (!refreshToken) {
+    return next(createHttpError(400, 'Refresh token is required'));
+  }
 
+  try {
+    const { newAccessToken, newRefreshToken } = await refreshSessionService(refreshToken);
+
+    res.cookie('refreshToken', newRefreshToken, { httpOnly: true, secure: true });
+
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully refreshed a session!',
+      data: { accessToken: newAccessToken },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 
   export const logoutUserController = async (req, res, next) => {

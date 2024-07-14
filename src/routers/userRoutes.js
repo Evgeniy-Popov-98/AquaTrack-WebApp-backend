@@ -13,7 +13,7 @@ import {
   refreshTokensController,
   logoutUserController,
 } from '../controllers/userController.js';
-// import { authenticate } from '../middleware/authMiddleware.js';
+import { authenticate } from '../middleware/authMiddleware.js';
 import { registerUserSchema, requestResetEmailSchema, resetPasswordSchema } from '../validation/registerUserSchema.js';
 import { loginUserSchema } from '../validation/loginUserSchema.js';
 import { userSchema } from '../validation/userSchema.js';
@@ -35,13 +35,13 @@ router.post(
 
 router.get(
   '/:userId',
-  //   authenticate,
+  authenticate,
   ctrlWrapper(getCurrentUserController),
 );
 
 router.patch(
   '/:userId',
-  //   authenticate,
+  authenticate,
   validateBody(userSchema),
   upload.single('avatar'),
   ctrlWrapper(updateUserController),
@@ -49,22 +49,22 @@ router.patch(
 
 router.post(
   '/refresh-tokens',
-  //   authenticate,
+  authenticate,
   ctrlWrapper(refreshTokensController),
 );
 
-// router.post('/logout', authenticate, ctrlWrapper(logoutUserController));
-router.post('/logout', ctrlWrapper(logoutUserController));
-
-
-router.post('/send-reset-email',
-  validateBody(requestResetEmailSchema),
-  ctrlWrapper(sendResetPasswordEmailController),);
-
-
+router.post('/logout', authenticate, ctrlWrapper(logoutUserController));
 
 router.post(
-'/reset-password',
-validateBody(resetPasswordSchema),
-ctrlWrapper(resetPasswordController),);
+  '/send-reset-email',
+  validateBody(requestResetEmailSchema),
+  ctrlWrapper(sendResetPasswordEmailController),
+);
+
+router.post(
+  '/reset-password',
+  validateBody(resetPasswordSchema),
+  ctrlWrapper(resetPasswordController),
+);
+
 export default router;

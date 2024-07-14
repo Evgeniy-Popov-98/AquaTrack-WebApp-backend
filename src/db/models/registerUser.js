@@ -1,5 +1,5 @@
-import mongoose from 'mongoose';
 import bcrypt from 'bcryptjs';
+import mongoose from 'mongoose';
 
 const registerSchema = new mongoose.Schema({
   email: { type: String, require: true, unique: true },
@@ -11,5 +11,4 @@ registerSchema.methods.comparePassword = async function (candidatePassword) {
 };
 
 const registerUser = mongoose.model('user', registerSchema);
-
 export default registerUser;

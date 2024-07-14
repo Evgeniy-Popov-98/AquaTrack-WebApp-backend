@@ -2,7 +2,6 @@ import bcrypt from 'bcryptjs';
 import mongoose from 'mongoose';
 
 const registerSchema = new mongoose.Schema({
-
   email: { type: String, require: true, unique: true },
   password: { type: String, require: true },
 });

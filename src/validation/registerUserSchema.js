@@ -7,13 +7,7 @@ export const registerUserSchema = Joi.object({
   password: Joi.string().required().messages({
     'any.required': '{{#label}} Is Required!',
   }),
-  repeatPassword: Joi.string().valid(Joi.ref('password')).required().messages({
-    'any.required': '{{#label}} Is Required!',
-    'any.only': 'Passwords must match',
-  }),
 });
-
-
 
 export const requestResetEmailSchema = Joi.object({
   email: Joi.string().email().required(),

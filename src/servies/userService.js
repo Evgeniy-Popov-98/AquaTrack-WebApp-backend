@@ -11,6 +11,7 @@ export const updateUserService = async (userId, payload, options = {}) => {
     new: true,
     includesResultMetadata: true,
     ...options,
+    
   });
 
   return result;

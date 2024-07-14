@@ -5,6 +5,10 @@ const waterSchema = new Schema(
     amountOfWater: { type: Number, required: true },
     date: { type: String },
     month: { type: String },
+    userId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+    },
     consumption: { type: Number },
   },
   {

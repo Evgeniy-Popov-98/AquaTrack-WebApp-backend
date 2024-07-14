@@ -3,9 +3,10 @@ import { createWater, deleteWater, patchWater } from '../servies/water.js';
 import { fetchDailyService, fetchMonthlyService } from '../servies/water.js';
 
 export const createWaterController = async (req, res) => {
+  const userId = req.user._id;
   const { body } = req;
 
-  const water = await createWater(body);
+  const water = await createWater( userId, body);
 
   res.status(201).json({
     status: 201,

@@ -16,8 +16,11 @@ import {
   fetchDailyController,
   fetchMonthlyController,
 } from '../controllers/water.js';
+import { authenticate } from '../middleware/authMiddleware.js';
 
 const router = Router();
+
+router.use('/', authenticate);
 
 router.post(
   '/',

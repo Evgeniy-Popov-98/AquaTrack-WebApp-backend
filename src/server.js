@@ -1,13 +1,14 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import rootRouter from './routers/index.js';
 import { env } from './utils/env.js';
 import { ENV_VARS } from './constants/constants.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import waterConsumptionRoutes from './routers/waterConsumptionRoutes.js';
 
-
+import 'dotenv/config';
 
 export const setupServer = () => {
   const app = express();
@@ -17,6 +18,8 @@ export const setupServer = () => {
   app.use(express.json());
 
   app.use('/api/water', waterConsumptionRoutes);
+
+  app.use(rootRouter);
 
   app.use('*', notFoundHandler);
   app.use(errorHandler);

@@ -15,7 +15,7 @@ import {
   ACCESS_TOKEN_LIFE_TIME,
   REFRESH_TOKEN_LIFE_TIME,
 } from '../constants/constants.js';
-//import { sendMail } from '../utils/sendMail.js';
+import { sendMail } from '../utils/sendMail.js';
 
 const createSession = () => {
   return {

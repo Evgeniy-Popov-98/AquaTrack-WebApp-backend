@@ -28,10 +28,13 @@ export const getCurrentUserController = async (req, res, next) => {
     throw createHttpError(404, { message: 'User not found' });
   }
 
+  const userData = user.toObject();
+  delete userData.password;
+  delete userData.__v;
   res.json({
     status: 200,
     message: 'Successfully found user!',
-    data: user,
+    data: userData
   });
 };
 

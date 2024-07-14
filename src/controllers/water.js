@@ -4,7 +4,7 @@ import createHttpError from 'http-errors';
 export const createWaterController = async (req, res) => {
   const { body } = req;
 
-  const water = await createWater(body);
+  const water = await createWater(body, req.user._id);
 
   res.status(201).json({
     status: 201,
@@ -16,7 +16,7 @@ export const createWaterController = async (req, res) => {
 export const patchWaterController = async (req, res, next) => {
   const { idRecordWater } = req.params;
 
-  const result = await patchWater(idRecordWater, req.body);
+  const result = await patchWater(idRecordWater, { ...req.body }, req.user._id);
 
   if (!result) {
     next(
@@ -37,7 +37,7 @@ export const patchWaterController = async (req, res, next) => {
 
 export const deleteWaterController = async (req, res, next) => {
   const { idRecordWater } = req.params;
-  const water = await deleteWater(idRecordWater);
+  const water = await deleteWater(idRecordWater, req.user._id);
 
   if (!water) {
     next(

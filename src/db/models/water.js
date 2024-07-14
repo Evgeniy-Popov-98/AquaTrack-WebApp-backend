@@ -6,6 +6,9 @@ const waterSchema = new Schema(
       type: Number,
       required: true,
     },
+    userId: {
+      type: Schema.Types.ObjectId,
+    },
   },
   {
     timestamps: true,

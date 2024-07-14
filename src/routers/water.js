@@ -7,6 +7,10 @@ import {
   deleteWaterController,
   patchWaterController,
 } from '../controllers/water.js';
+import {
+  fetchDailyController,
+  fetchMonthlyController,
+} from '../controllers/water.js';
 
 const router = Router();
 
@@ -23,5 +27,9 @@ router.patch(
 );
 
 router.delete('/:idRecordWater', ctrlWrapper(deleteWaterController));
+
+router.get('/daily/:date', ctrlWrapper(fetchDailyController));
+
+router.get('/monthly/:month', ctrlWrapper(fetchMonthlyController));
 
 export default router;

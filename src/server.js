@@ -6,7 +6,6 @@ import { env } from './utils/env.js';
 import { ENV_VARS } from './constants/constants.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
-import waterConsumptionRoutes from './routers/waterConsumptionRoutes.js';
 
 import 'dotenv/config';
 
@@ -16,8 +15,6 @@ export const setupServer = () => {
   app.use(cors());
   app.use(cookieParser());
   app.use(express.json());
-
-  app.use('/api/water', waterConsumptionRoutes);
 
   app.use(rootRouter);
 

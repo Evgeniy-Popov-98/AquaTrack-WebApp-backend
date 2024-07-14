@@ -1,5 +1,6 @@
-import { createWater, deleteWater, patchWater } from '../servies/water.js';
 import createHttpError from 'http-errors';
+import { createWater, deleteWater, patchWater } from '../servies/water.js';
+import { fetchDailyService, fetchMonthlyService } from '../servies/water.js';
 
 export const createWaterController = async (req, res) => {
   const { body } = req;
@@ -50,4 +51,20 @@ export const deleteWaterController = async (req, res, next) => {
   }
 
   res.status(204).send();
+};
+
+export const fetchDailyController = async (req, res) => {
+  const date = req.params.date;
+
+  const result = await fetchDailyService(date);
+
+  res.json(result);
+};
+
+export const fetchMonthlyController = async (req, res) => {
+  const month = req.params.month;
+
+  const result = await fetchMonthlyService(month);
+
+  res.json(result);
 };

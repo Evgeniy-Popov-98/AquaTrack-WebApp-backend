@@ -1,8 +1,8 @@
 import { WaterCollection } from '../db/models/water.js';
-import {
-  getDailyConsumption,
-  getMonthlyConsumption,
-} from '../db/WaterConsumptionData.js';
+// import {
+//   getDailyConsumption,
+//   getMonthlyConsumption,
+// } from '../db/WaterConsumptionData.js';
 import {
   validateDate,
   validateMonth,
@@ -41,6 +41,7 @@ export const fetchDailyService = async (date) => {
   }
 
   const dailyConsumption = await getDailyConsumption(date);
+
   if (!dailyConsumption) {
     throw new Error('Data for the specified date was not found');
   }

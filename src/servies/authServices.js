@@ -27,16 +27,14 @@ const createSession = () => {
 };
 
 
-export const registerUserService = async ({ email, password, repeatPassword }) => {
+export const registerUserService = async ({ email, password}) => {
   const existingUser = await registerUser.findOne({ email });
 
   if (existingUser) {
     throw createHttpError(409, 'Email already in use');
   }
 
-  if (password !== repeatPassword) {
-    throw createHttpError(400, 'Passwords do not match');
-  }
+  
 
   const hashedPassword = await bcrypt.hash(password, 10);
 

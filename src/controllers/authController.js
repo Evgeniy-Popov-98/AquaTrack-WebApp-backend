@@ -23,14 +23,14 @@ const setupSession = (res, session) => {
 
 export const registerUserController = async (req, res, next) => {
   try {
-    const { email, password, repeatPassword } = req.body;
+    const { email, password } = req.body;
 
     // Перевірка наявності необхідних полів
-    if (!email || !password || !repeatPassword) {
+    if (!email || !password ) {
       throw createHttpError(400, 'Email, password, and repeat password are required');
     }
 
-    const userData = await registerUserService({ email, password, repeatPassword });
+    const userData = await registerUserService({ email, password });
 
     res.status(201).json({
       status: 201,

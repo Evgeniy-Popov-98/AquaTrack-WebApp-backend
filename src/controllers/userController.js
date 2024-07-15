@@ -19,6 +19,14 @@ const setupSession = (res, session) => {
   });
 };
 
+
+export const removeSensitiveFields = (user) => {
+  const userData = user.toObject ? user.toObject() : user;
+  delete userData.password;
+  delete userData.__v;
+  
+  return userData;
+};
 export const getCurrentUserController = async (req, res, next) => {
   const userId = req.params;
 
@@ -28,9 +36,7 @@ export const getCurrentUserController = async (req, res, next) => {
     throw createHttpError(404, { message: 'User not found' });
   }
 
-  const userData = user.toObject();
-  delete userData.password;
-  delete userData.__v;
+  const userData = removeSensitiveFields(user);
   res.json({
     status: 200,
     message: 'Successfully found user!',
@@ -61,9 +67,8 @@ export const updateUserController = async (req, res, next) => {
     }
 
     // Видаляємо пароль та __v з відповіді
-    const userData = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
-    delete userData.password;
-    delete userData.__v;
+    const user = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
+    const userData = removeSensitiveFields(user);
 
     res.status(200).json({
       status: 200,

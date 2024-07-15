@@ -16,13 +16,10 @@ export const createWaterController = async (req, res) => {
 };
 
 export const patchWaterController = async (req, res, next) => {
-  const {
-    body,
-    params: { idRecordWater },
-    user: { _id: userId },
-  } = req;
+  const userId = req.user._id;
+  const { idRecordWater } = req.params;
 
-  const result = await patchWater(idRecordWater, body, userId);
+  const result = await patchWater(userId, idRecordWater, req.body);
 
   if (!result) {
     next(
@@ -42,12 +39,9 @@ export const patchWaterController = async (req, res, next) => {
 };
 
 export const deleteWaterController = async (req, res, next) => {
-  const {
-    params: { idRecordWater },
-    user: { _id: userId },
-  } = req;
-
-  const water = await deleteWater(idRecordWater, userId);
+  const userId = req.user._id;
+  const { idRecordWater } = req.params;
+  const water = await deleteWater(userId, idRecordWater);
 
   if (!water) {
     next(
@@ -63,9 +57,10 @@ export const deleteWaterController = async (req, res, next) => {
 };
 
 export const fetchDailyController = async (req, res) => {
+  const userId = req.user._id;
   const date = req.params.date;
 
-  const result = await fetchDailyService(date);
+  const result = await fetchDailyService(userId, date);
 
   res.json(result);
 };

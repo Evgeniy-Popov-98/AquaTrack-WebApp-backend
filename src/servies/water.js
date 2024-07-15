@@ -1,27 +1,18 @@
 import { WaterCollection } from '../db/models/water.js';
-// import {
-//   getDailyConsumption,
-//   getMonthlyConsumption,
-// } from '../db/WaterConsumptionData.js';
 import {
   validateDate,
-  validateMonth,
+  // validateMonth,
 } from '../validation/waterConsumptionValidation.js';
 import { formatResponse } from '../utils/formatResponse.js';
 
-export const createWater = async (payload, userId) => {
-  const water = await WaterCollection.create({ ...payload, userId: userId });
+export const createWater = async (userId, payload) => {
+  const water = await WaterCollection.create({userId, ...payload});
   return water;
 };
 
-export const patchWater = async (
-  idRecordWater,
-  payload,
-  userId,
-  options = {},
-) => {
-  const rawResult = await WaterCollection.findByIdAndUpdate(
-    { _id: idRecordWater, userId },
+export const patchWater = async (userId, waterId, payload, options={}) => {
+  const rawResult = await WaterCollection.findOneAndUpdate(
+    {userId, _id: waterId},
     payload,
     { new: true, includeResultMetadata: true, ...options },
   );
@@ -30,23 +21,34 @@ export const patchWater = async (
   return rawResult;
 };
 
-export const deleteWater = async (idRecordWater, userId) => {
-  const water = await WaterCollection.findByIdAndDelete({
-    _id: idRecordWater,
-    userId,
+export const deleteWater = async (userId, waterId) => {
+  const water = await WaterCollection.findOneAndDelete({
+    userId, _id: waterId,
   });
   return water;
 };
 
-export const fetchDailyService = async (date) => {
-  //   if (!validateDate(date)) {
-  //     throw new Error('Invalid date format');
-  //   }
-  //   const dailyConsumption = await getDailyConsumption(date);
-  //   if (!dailyConsumption) {
-  //     throw new Error('Data for the specified date was not found');
-  //   }
-  //   return formatResponse(date, dailyConsumption);
+export const fetchDailyService = async ( userId, date ) => {
+  if (!validateDate(date)) {
+    throw new Error('Invalid date format');
+  }
+
+  const startDate = new Date("2024-07-01T00:00:00Z");
+  const endDate = new Date("2024-07-18T00:00:00Z");
+
+  const dailyConsumption = await WaterCollection.find({
+    userId,
+    createdAt:{
+      $gte: startDate,
+      $lt: endDate
+    }
+  });
+
+  if (!dailyConsumption) {
+    throw new Error('Data for the specified date was not found');
+  }
+
+  return formatResponse(date, dailyConsumption);
 };
 
 export const fetchMonthlyService = async (month) => {

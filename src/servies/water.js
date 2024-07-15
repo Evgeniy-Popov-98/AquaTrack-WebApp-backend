@@ -1,8 +1,5 @@
 import { WaterCollection } from '../db/models/water.js';
-import {
-  validateDate,
-  // validateMonth,
-} from '../validation/waterConsumptionValidation.js';
+import { validateDate } from '../validation/dateValidation.js';
 import { formatResponse } from '../utils/formatResponse.js';
 
 export const createWater = async (userId, payload) => {
@@ -16,8 +13,6 @@ export const patchWater = async (userId, waterId, payload, options={}) => {
     payload,
     { new: true, includeResultMetadata: true, ...options },
   );
-  //   ).where({ userId });
-
   return rawResult;
 };
 
@@ -46,7 +41,7 @@ endDate.setUTCDate(endDate.getUTCDate() + 1);
     }
   });
 
-  if (!dailyConsumption) {
+  if (!dailyConsumption || dailyConsumption.length === 0) {
     throw new Error('Data for the specified date was not found');
   }
 

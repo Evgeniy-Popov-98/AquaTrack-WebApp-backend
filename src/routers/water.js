@@ -11,8 +11,6 @@ import {
   createWaterController,
   deleteWaterController,
   patchWaterController,
-} from '../controllers/water.js';
-import {
   fetchDailyController,
   fetchMonthlyController,
 } from '../controllers/water.js';

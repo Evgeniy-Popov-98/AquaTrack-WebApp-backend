@@ -66,9 +66,10 @@ export const fetchDailyController = async (req, res) => {
 };
 
 export const fetchMonthlyController = async (req, res) => {
+  const userId = req.user._id;
   const month = req.params.month;
 
-  const result = await fetchMonthlyService(month);
+  const result = await fetchMonthlyService(userId, month);
 
   res.json(result);
 };

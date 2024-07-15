@@ -48,13 +48,26 @@ endDate.setUTCDate(endDate.getUTCDate() + 1);
   return formatResponse(dateString, dailyConsumption);
 };
 
-export const fetchMonthlyService = async (month) => {
-  //   if (!validateMonth(month)) {
-  //     throw new Error('Invalid month format');
-  //   }
-  //   const monthlyConsumption = await getMonthlyConsumption(month);
-  //   if (!monthlyConsumption) {
-  //     throw new Error('Data for the specified month was not found');
-  //   }
-  //   return formatResponse(month, monthlyConsumption);
+export const fetchMonthlyService = async (userId, dateString) => {
+  if (!validateDate(dateString)) {
+    throw new Error('Invalid date format');
+  }
+
+  const [year, month] = dateString.split('-');
+  const startDate = new Date(Date.UTC(year, month - 1, 1));
+  const endDate = new Date(Date.UTC(year, month, 1));
+
+  const monthlyConsumption = await WaterCollection.find({
+    userId,
+    createdAt: {
+      $gte: startDate,
+      $lt: endDate,
+    },
+  });
+
+   if (!monthlyConsumption || monthlyConsumption.length === 0) {
+    throw new Error('Data for the specified month was not found');
+  }
+
+  return formatResponse(dateString, monthlyConsumption);
 };

@@ -28,12 +28,13 @@ export const deleteWater = async (userId, waterId) => {
   return water;
 };
 
-export const fetchDailyService = async ( userId, date ) => {
-  if (!validateDate(date)) {
+export const fetchDailyService = async ( userId, dateString ) => {
+  if (!validateDate(dateString)) {
     throw new Error('Invalid date format');
   }
 
-  const startDate = new Date(`2024-07-${date.padStart(2, '0')}T00:00:00Z`);
+const [year, month, day] = dateString.split('-');
+const startDate = new Date(`${year}-${month}-${day}T00:00:00Z`);
 const endDate = new Date(startDate);
 endDate.setUTCDate(endDate.getUTCDate() + 1);
 
@@ -49,7 +50,7 @@ endDate.setUTCDate(endDate.getUTCDate() + 1);
     throw new Error('Data for the specified date was not found');
   }
 
-  return formatResponse(date, dailyConsumption);
+  return formatResponse(dateString, dailyConsumption);
 };
 
 export const fetchMonthlyService = async (month) => {

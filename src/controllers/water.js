@@ -14,9 +14,13 @@ export const createWaterController = async (req, res) => {
 };
 
 export const patchWaterController = async (req, res, next) => {
-  const { idRecordWater } = req.params;
+  const {
+    body,
+    params: { idRecordWater },
+    user: { _id: userId },
+  } = req;
 
-  const result = await patchWater(idRecordWater, { ...req.body }, req.user._id);
+  const result = await patchWater(idRecordWater, body, userId);
 
   if (!result) {
     next(
@@ -36,8 +40,12 @@ export const patchWaterController = async (req, res, next) => {
 };
 
 export const deleteWaterController = async (req, res, next) => {
-  const { idRecordWater } = req.params;
-  const water = await deleteWater(idRecordWater, req.user._id);
+  const {
+    params: { idRecordWater },
+    user: { _id: userId },
+  } = req;
+
+  const water = await deleteWater(idRecordWater, userId);
 
   if (!water) {
     next(

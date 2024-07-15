@@ -7,25 +7,22 @@ export const createWater = async (payload, userId) => {
 
 export const patchWater = async (
   idRecordWater,
-  { ...payload },
+  payload,
   userId,
   options = {},
 ) => {
-  const rawResult = await WaterCollection.findOneAndUpdate(
+  const rawResult = await WaterCollection.findByIdAndUpdate(
     { _id: idRecordWater, userId },
-    { ...payload },
+    payload,
     { new: true, includeResultMetadata: true, ...options },
-  ).where({ userId });
+  );
+  //   ).where({ userId });
 
-  if (!rawResult || !rawResult.value) return null;
-  return {
-    water: rawResult.value,
-    isNew: Boolean(rawResult?.lastErrorObject?.upserted),
-  };
+  return rawResult;
 };
 
 export const deleteWater = async (idRecordWater, userId) => {
-  const water = await WaterCollection.findOneAndDelete({
+  const water = await WaterCollection.findByIdAndDelete({
     _id: idRecordWater,
     userId,
   });

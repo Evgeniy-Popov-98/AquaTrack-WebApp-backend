@@ -33,8 +33,9 @@ export const fetchDailyService = async ( userId, date ) => {
     throw new Error('Invalid date format');
   }
 
-  const startDate = new Date("2024-07-01T00:00:00Z");
-  const endDate = new Date("2024-07-18T00:00:00Z");
+  const startDate = new Date(`2024-07-${date.padStart(2, '0')}T00:00:00Z`);
+const endDate = new Date(startDate);
+endDate.setUTCDate(endDate.getUTCDate() + 1);
 
   const dailyConsumption = await WaterCollection.find({
     userId,

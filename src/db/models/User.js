@@ -4,7 +4,7 @@ const UserSchema = new Schema({
   userId: { type: Schema.Types.ObjectId, require: true },
   name: {
     type: String,
-    required: true,
+    required: false,
   },
   email: {
     type: String,

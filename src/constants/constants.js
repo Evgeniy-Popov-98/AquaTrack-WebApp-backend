@@ -1,3 +1,4 @@
+// src\constants\constants.js
 import path from 'path';
 export const ENV_VARS = {
   PORT: 'PORT',

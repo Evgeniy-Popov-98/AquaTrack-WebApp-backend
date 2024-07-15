@@ -3,10 +3,10 @@ import registerUser from '../db/models/registerUser.js';
 import { Session } from '../db/models/Session.js';
 import User from '../db/models/User.js';
 import bcrypt from 'bcrypt';
-import { ENV_VARS } from '../constants/constants.js';
+import { ENV_VARS, SMTP } from '../constants/constants.js';
 import jwt from 'jsonwebtoken';
-import { env } from '../utils/env.js';
-import { TEMPLATES_UPLOAD_DIR } from '../constants/constants.js';
+import {env} from '../utils/env.js';
+import {TEMPLATES_UPLOAD_DIR} from '../constants/constants.js';
 import fs from 'node:fs/promises';
 import Handlebars from 'handlebars';
 import path from 'node:path';
@@ -15,7 +15,7 @@ import {
   ACCESS_TOKEN_LIFE_TIME,
   REFRESH_TOKEN_LIFE_TIME,
 } from '../constants/constants.js';
-// import { sendMail } from '../utils/sendMail.js';
+import { sendMail } from '../utils/sendMail.js';
 
 const createSession = () => {
   return {
@@ -26,16 +26,21 @@ const createSession = () => {
   };
 };
 
-export const registerUserService = async ({ name, email, password }) => {
+
+export const registerUserService = async ({ email, password, repeatPassword }) => {
   const existingUser = await registerUser.findOne({ email });
 
   if (existingUser) {
     throw createHttpError(409, 'Email already in use');
   }
 
+  if (password !== repeatPassword) {
+    throw createHttpError(400, 'Passwords do not match');
+  }
+
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const newUser = new registerUser({ name, email, password: hashedPassword });
+  const newUser = new registerUser({ email, password: hashedPassword });
 
   await newUser.save();
 
@@ -94,6 +99,7 @@ export const logoutUserService = async ({ sessionId, refreshToken }) => {
   }
 };
 
+
 export const sendResetPasswordEmail = async (email) => {
   const user = await User.findOne({ email });
 
@@ -108,33 +114,34 @@ export const sendResetPasswordEmail = async (email) => {
     },
     env(ENV_VARS.JWT_SECRET),
     {
-      expiresIn: '5m', // встановлюємо термін дії токену на 5 хвилин
+      expiresIn: '5m',
     },
   );
 
-  const templateSource = await fs.readFile(
-    path.join(TEMPLATES_UPLOAD_DIR, 'reset-password-email.html'),
-  );
-
-  const template = Handlebars.compile(templateSource.toString());
-
-  const html = template({
-    name: user.name,
-    link: `${env(ENV_VARS.FRONTEND_HOST)}/reset-password?token=${token}`,
-  });
-
   try {
-    // await sendMail({
-    //   html,
-    //   to: email,
-    //   from: env(ENV_VARS.SMTP_FROM),
-    //   subject: 'Reset your password!',
-    // });
+    const templateSource = await fs.readFile(
+      path.join(TEMPLATES_UPLOAD_DIR, 'reset-password-email.html'),
+    );
+
+    const template = Handlebars.compile(templateSource.toString());
+
+    const html = template({
+      name: user.name,
+      link: `${env(ENV_VARS.FRONTEND_HOST)}/reset-password?token=${token}`,
+    });
+
+    await sendMail({
+      html,
+      to: email,
+      from: env(SMTP.SMTP_FROM),
+      subject: 'Reset your password!',
+    });
   } catch (err) {
-    console.log(err);
+    console.error('Error sending email:', err);
     throw createHttpError(500, 'Problem with sending emails');
   }
 };
+
 
 export const resetPassword = async ({ token, password }) => {
   let tokenPayload;

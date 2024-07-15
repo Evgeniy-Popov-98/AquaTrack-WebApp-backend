@@ -28,10 +28,13 @@ export const getCurrentUserController = async (req, res, next) => {
     throw createHttpError(404, { message: 'User not found' });
   }
 
+  const userData = user.toObject();
+  delete userData.password;
+  delete userData.__v;
   res.json({
     status: 200,
     message: 'Successfully found user!',
-    data: user,
+    data: userData
   });
 };
 
@@ -40,34 +43,36 @@ export const updateUserController = async (req, res, next) => {
   const { userId } = req.params;
   const avatar = req.file;
 
-  let avatarUrl;
-  let updatedUser;
+  try {
+    let updatedUser;
 
-  if (avatar) {
-    avatarUrl = await saveFile(avatar);
-    updatedUser = await updateUserService(userId, {
-      ...body,
-      avatar: avatarUrl,
-    });
+    if (avatar) {
+      const avatarUrl = await saveFile(avatar);
+      updatedUser = await updateUserService(userId, {
+        ...body,
+        avatar: avatarUrl,
+      });
+    } else {
+      updatedUser = await updateUserService(userId, { ...body });
+    }
+
+    if (!updatedUser) {
+      throw createHttpError(404, { message: 'User not found' });
+    }
+
+    // Видаляємо пароль та __v з відповіді
+    const userData = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
+    delete userData.password;
+    delete userData.__v;
 
     res.status(200).json({
       status: 200,
       message: 'User updated successfully',
-      data: updatedUser,
+      data: userData,
     });
+  } catch (error) {
+    next(error);
   }
-
-  updatedUser = await updateUserService(userId, { ...body });
-
-  if (!updatedUser) {
-    throw createHttpError(404, { message: 'User not found' });
-  }
-
-  res.status(200).json({
-    status: 200,
-    message: 'User updated successfully',
-    data: updatedUser,
-  });
 };
 
 export const refreshTokensController = async (req, res, next) => {

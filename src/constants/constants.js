@@ -32,7 +32,6 @@ export const ACCESS_TOKEN_LIFE_TIME = 15 * 60 * 1000;
 
 export const REFRESH_TOKEN_LIFE_TIME = 30 * 24 * 60 * 60 * 1000;
 
-
 export const SMTP = {
   SMTP_HOST: 'SMTP_HOST',
   SMTP_PORT: 'SMTP_PORT',
@@ -40,3 +39,5 @@ export const SMTP = {
   SMTP_PASSWORD: 'SMTP_PASSWORD',
   SMTP_FROM: 'SMTP_FROM',
 };
+
+export const SWAGGER_PATH = path.join(process.cwd(), 'docs', 'swagger.json');

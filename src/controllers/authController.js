@@ -3,8 +3,11 @@ import {
   loginUserService,
   resetPassword,
   sendResetPasswordEmail,
+  loginOrSignupWithGoogleOAuth,
 } from '../servies/authServices.js';
+import { generateOAuthURL } from '../utils/googleOAuth.js';
 import { REFRESH_TOKEN_LIFE_TIME } from '../constants/constants.js';
+import { validateGoogleOAuthSchema } from '../validation/validateGoogleOAuth.js';
 
 const setupSession = (res, session) => {
   res.cookie('sessionId', session._id, {
@@ -62,4 +65,40 @@ export const resetPasswordController = async (req, res) => {
     message: 'Password was successfully reset!',
     data: {},
   });
+};
+
+
+export const getOAuthUrlController = (req, res) => {
+  const url = generateOAuthURL();
+
+  res.json({
+    status: 200,
+    message: 'Successfully received oauth url!',
+    data: {
+      url,
+    },
+  });
+};
+
+export const verifyGoogleOAuthController = async (req, res, next) => {
+  const { error } = validateGoogleOAuthSchema.validate(req.body);
+
+  if (error) {
+    return next(createHttpError(400, error.details[0].message));
+  }
+
+  const { code } = req.body;
+
+  try {
+    const session = await loginOrSignupWithGoogleOAuth(code);
+    setupSession(res, session);
+
+    res.json({
+      status: 200,
+      message: 'Logged in with Google OAuth!',
+      data: { accessToken: session.accessToken },
+    });
+  } catch (error) {
+    next(error);
+  }
 };

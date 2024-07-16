@@ -1,10 +1,12 @@
-import { createWater, deleteWater, patchWater } from '../servies/water.js';
 import createHttpError from 'http-errors';
+import { createWater, deleteWater, patchWater } from '../servies/water.js';
+import { fetchDailyService, fetchMonthlyService } from '../servies/water.js';
 
 export const createWaterController = async (req, res) => {
+  const userId = req.user._id;
   const { body } = req;
 
-  const water = await createWater(body);
+  const water = await createWater(body, userId);
 
   res.status(201).json({
     status: 201,
@@ -14,9 +16,13 @@ export const createWaterController = async (req, res) => {
 };
 
 export const patchWaterController = async (req, res, next) => {
-  const { idRecordWater } = req.params;
+  const {
+    body,
+    params: { idRecordWater },
+    user: { _id: userId },
+  } = req;
 
-  const result = await patchWater(idRecordWater, req.body);
+  const result = await patchWater(idRecordWater, body, userId);
 
   if (!result) {
     next(
@@ -36,8 +42,12 @@ export const patchWaterController = async (req, res, next) => {
 };
 
 export const deleteWaterController = async (req, res, next) => {
-  const { idRecordWater } = req.params;
-  const water = await deleteWater(idRecordWater);
+  const {
+    params: { idRecordWater },
+    user: { _id: userId },
+  } = req;
+
+  const water = await deleteWater(idRecordWater, userId);
 
   if (!water) {
     next(
@@ -50,4 +60,20 @@ export const deleteWaterController = async (req, res, next) => {
   }
 
   res.status(204).send();
+};
+
+export const fetchDailyController = async (req, res) => {
+  const date = req.params.date;
+
+  const result = await fetchDailyService(date);
+
+  res.json(result);
+};
+
+export const fetchMonthlyController = async (req, res) => {
+  const month = req.params.month;
+
+  const result = await fetchMonthlyService(month);
+
+  res.json(result);
 };

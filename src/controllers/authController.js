@@ -1,10 +1,8 @@
-
-
 import {
   registerUserService,
   loginUserService,
   resetPassword,
-  sendResetPasswordEmail
+  sendResetPasswordEmail,
 } from '../servies/authServices.js';
 import { REFRESH_TOKEN_LIFE_TIME } from '../constants/constants.js';
 import createHttpError from 'http-errors';
@@ -26,8 +24,11 @@ export const registerUserController = async (req, res, next) => {
     const { email, password } = req.body;
 
     // Перевірка наявності необхідних полів
-    if (!email || !password ) {
-      throw createHttpError(400, 'Email, password, and repeat password are required');
+    if (!email || !password) {
+      throw createHttpError(
+        400,
+        'Email, password, and repeat password are required',
+      );
     }
 
     const userData = await registerUserService({ email, password });
@@ -56,7 +57,6 @@ export const loginUserController = async (req, res, next) => {
   });
 };
 
-
 export const sendResetPasswordEmailController = async (req, res) => {
   await sendResetPasswordEmail(req.body.email);
 
@@ -66,7 +66,6 @@ export const sendResetPasswordEmailController = async (req, res) => {
     data: {},
   });
 };
-
 
 export const resetPasswordController = async (req, res) => {
   await resetPassword(req.body);

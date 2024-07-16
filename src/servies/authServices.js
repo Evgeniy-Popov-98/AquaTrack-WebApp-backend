@@ -5,8 +5,8 @@ import User from '../db/models/User.js';
 import bcrypt from 'bcrypt';
 import { ENV_VARS, SMTP } from '../constants/constants.js';
 import jwt from 'jsonwebtoken';
-import {env} from '../utils/env.js';
-import {TEMPLATES_UPLOAD_DIR} from '../constants/constants.js';
+import { env } from '../utils/env.js';
+import { TEMPLATES_UPLOAD_DIR } from '../constants/constants.js';
 import fs from 'node:fs/promises';
 import Handlebars from 'handlebars';
 import path from 'node:path';
@@ -26,15 +26,12 @@ const createSession = () => {
   };
 };
 
-
-export const registerUserService = async ({ email, password}) => {
+export const registerUserService = async ({ email, password }) => {
   const existingUser = await registerUser.findOne({ email });
 
   if (existingUser) {
     throw createHttpError(409, 'Email already in use');
   }
-
-  
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -87,7 +84,7 @@ export const refreshSessionService = async ({ sessionId, refreshToken }) => {
 };
 
 export const logoutUserService = async ({ sessionId, refreshToken }) => {
-  const session = await Session.findOneAndDelete({
+  const session = await Session.deleteOne({
     _id: sessionId,
     refreshToken,
   });
@@ -96,7 +93,6 @@ export const logoutUserService = async ({ sessionId, refreshToken }) => {
     throw createHttpError(401, 'Session not found');
   }
 };
-
 
 export const sendResetPasswordEmail = async (email) => {
   const user = await User.findOne({ email });
@@ -139,7 +135,6 @@ export const sendResetPasswordEmail = async (email) => {
     throw createHttpError(500, 'Problem with sending emails');
   }
 };
-
 
 export const resetPassword = async ({ token, password }) => {
   let tokenPayload;

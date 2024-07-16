@@ -5,7 +5,6 @@ import {
   sendResetPasswordEmail,
 } from '../servies/authServices.js';
 import { REFRESH_TOKEN_LIFE_TIME } from '../constants/constants.js';
-import createHttpError from 'http-errors';
 
 const setupSession = (res, session) => {
   res.cookie('sessionId', session._id, {
@@ -20,19 +19,15 @@ const setupSession = (res, session) => {
 };
 
 export const registerUserController = async (req, res, next) => {
-  try {
-    const { email, password } = req.body;
+  const { email, password } = req.body;
 
-    const userData = await registerUserService({ email, password });
+  const userData = await registerUserService({ email, password });
 
-    res.status(201).json({
-      status: 201,
-      message: 'Successfully registered a user!',
-      data: userData,
-    });
-  } catch (error) {
-    next(error);
-  }
+  res.status(201).json({
+    status: 201,
+    message: 'Successfully registered a user!',
+    data: userData,
+  });
 };
 
 export const loginUserController = async (req, res, next) => {

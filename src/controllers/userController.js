@@ -19,14 +19,14 @@ const setupSession = (res, session) => {
   });
 };
 
-
 export const removeSensitiveFields = (user) => {
   const userData = user.toObject ? user.toObject() : user;
   delete userData.password;
   delete userData.__v;
-  
+
   return userData;
 };
+
 export const getCurrentUserController = async (req, res, next) => {
   const userId = req.params;
 
@@ -40,7 +40,7 @@ export const getCurrentUserController = async (req, res, next) => {
   res.json({
     status: 200,
     message: 'Successfully found user!',
-    data: userData
+    data: userData,
   });
 };
 

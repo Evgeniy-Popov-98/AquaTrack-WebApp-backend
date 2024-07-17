@@ -16,6 +16,7 @@ import {
   REFRESH_TOKEN_LIFE_TIME,
 } from '../constants/constants.js';
 import { sendMail } from '../utils/sendMail.js';
+import { validateGoogleOAuthCode } from '../utils/googleOAuth.js';
 
 const createSession = () => {
   return {
@@ -43,27 +44,40 @@ export const registerUserService = async ({ email, password }) => {
   delete userData.__v;
   delete userData.password;
 
-  return userData;
+  // Створення access токена
+  //   const accessToken = jwt.sign({ userId: newUser._id }, process.env.ACCESS_SECRET, {
+  //     expiresIn: process.env.JWT_ACC_EXPIRES_IN,
+  //   });
+
+  await Session.deleteOne({ userId: userData._id });
+
+  const session = await Session.create({
+    userId: userData._id,
+    ...createSession(),
+  });
+
+  return { userData, accessToken: session.accessToken };
 };
 
 export const loginUserService = async ({ email, password }) => {
-  const user = await User.findOne({ email });
+  const user = await registerUser.findOne({ email });
   if (!user || !(await bcrypt.compare(password, user.password))) {
     throw createHttpError(401, 'Invalid email or password');
   }
 
   const isEqual = await bcrypt.compare(password, user.password);
-
   if (!isEqual) {
     throw createHttpError(401, 'Unauthorized');
   }
 
   await Session.deleteOne({ userId: user._id });
 
-  return await Session.create({
+  const session = await Session.create({
     userId: user._id,
     ...createSession(),
   });
+
+  return { session, userId: user._id };
 };
 
 export const refreshSessionService = async ({ sessionId, refreshToken }) => {
@@ -153,4 +167,33 @@ export const resetPassword = async ({ token, password }) => {
     },
     { password: hashedPassword },
   );
+};
+export const loginOrSignupWithGoogleOAuth = async (code) => {
+  const payload = await validateGoogleOAuthCode(code);
+
+  if (!payload) throw createHttpError(401);
+
+  let user = await User.findOne({ email: payload.email });
+
+  if (!user) {
+    const hashedPassword = await bcrypt.hash(
+      randomBytes(40).toString('base64'),
+      10,
+    );
+
+    user = await User.create({
+      name: `${payload.given_name} ${payload.family_name}`,
+      email: payload.email,
+      password: hashedPassword,
+    });
+  }
+
+  await Session.deleteOne({
+    userId: user._id,
+  });
+
+  return await Session.create({
+    userId: user._id,
+    ...createSession(),
+  });
 };

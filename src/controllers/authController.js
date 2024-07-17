@@ -8,6 +8,7 @@ import {
 import { generateOAuthURL } from '../utils/googleOAuth.js';
 import { REFRESH_TOKEN_LIFE_TIME } from '../constants/constants.js';
 import { validateGoogleOAuthSchema } from '../validation/validateGoogleOAuth.js';
+import User from "../db/models/User.js";
 
 const setupSession = (res, session) => {
   res.cookie('sessionId', session._id, {
@@ -19,6 +20,19 @@ const setupSession = (res, session) => {
     httpOnly: true,
     expires: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
   });
+};
+
+export const getTotalUsers = async (req, res) => {
+  try {
+    // Підрахунок загальної кількості користувачів у базі даних
+    const totalUsers = await User.countDocuments();
+    
+    // Відправка відповіді з кількістю користувачів
+    res.status(200).json({ totalUsers });
+  } catch (error) {
+    // Обробка помилок
+    res.status(500).json({ message: 'Server Error', error });
+  }
 };
 
 export const registerUserController = async (req, res, next) => {

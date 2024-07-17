@@ -8,12 +8,14 @@ import {
   resetPasswordController,
   getOAuthUrlController,
   verifyGoogleOAuthController,
+  getTotalUsers
 } from '../controllers/authController.js';
 import {
   getCurrentUserController,
   updateUserController,
   refreshTokensController,
   logoutUserController,
+  
 } from '../controllers/userController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
 import { registerUserSchema, requestResetEmailSchema, resetPasswordSchema } from '../validation/registerUserSchema.js';
@@ -24,6 +26,8 @@ import { validateGoogleOAuthSchema } from '../validation/validateGoogleOAuth.js'
 
 const router = Router();
 
+
+router.get('/total-users', getTotalUsers);
 router.post(
   '/register',
   validateBody(registerUserSchema),

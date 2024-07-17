@@ -8,8 +8,8 @@ import {
 import { generateOAuthURL } from '../utils/googleOAuth.js';
 import { REFRESH_TOKEN_LIFE_TIME } from '../constants/constants.js';
 import { validateGoogleOAuthSchema } from '../validation/validateGoogleOAuth.js';
-import User from "../db/models/User.js";
-import createHttpError  from 'http-errors';
+import User from '../db/models/User.js';
+import createHttpError from 'http-errors';
 const setupSession = (res, session) => {
   res.cookie('sessionId', session._id, {
     httpOnly: true,
@@ -26,7 +26,7 @@ export const getTotalUsers = async (req, res) => {
   try {
     // Підрахунок загальної кількості користувачів у базі даних
     const totalUsers = await User.countDocuments();
-    
+
     // Відправка відповіді з кількістю користувачів
     res.status(200).json({ totalUsers });
   } catch (error) {
@@ -35,39 +35,13 @@ export const getTotalUsers = async (req, res) => {
   }
 };
 
-//export const registerUserController = async (req, res, next) => {
-  //const { email, password } = req.body;
-
-  //const userData = await registerUserService({ email, password });
-
-  //res.status(201).json({
-    //status: 201,
-    //message: 'Successfully registered a user!',
-    //data: userData,
-  ///});
-//};
-
-//export const loginUserController = async (req, res, next) => {
-  //const { email, password } = req.body;
-
-  //const session = await loginUserService({ email, password });
-
-  //setupSession(res, session);
-
-  //res.status(200).json({
-   // status: 200,
-   // message: 'Successfully logged in a user!',
-    //data: { accessToken: session.accessToken },
-  //});
-//};
-
-
-
-
 export const registerUserController = async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const { userData, accessToken } = await registerUserService({ email, password });
+    const { userData, accessToken } = await registerUserService({
+      email,
+      password,
+    });
 
     res.status(201).json({
       status: 201,
@@ -96,7 +70,6 @@ export const loginUserController = async (req, res, next) => {
   }
 };
 
-
 export const sendResetPasswordEmailController = async (req, res) => {
   await sendResetPasswordEmail(req.body.email);
 
@@ -116,7 +89,6 @@ export const resetPasswordController = async (req, res) => {
     data: {},
   });
 };
-
 
 export const getOAuthUrlController = (req, res) => {
   const url = generateOAuthURL();

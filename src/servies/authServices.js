@@ -16,7 +16,7 @@ import {
   REFRESH_TOKEN_LIFE_TIME,
 } from '../constants/constants.js';
 import { sendMail } from '../utils/sendMail.js';
-import {validateGoogleOAuthCode} from "../utils/googleOAuth.js";
+import { validateGoogleOAuthCode } from '../utils/googleOAuth.js';
 
 const createSession = () => {
   return {
@@ -26,20 +26,6 @@ const createSession = () => {
     refreshTokenValidUntil: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
   };
 };
-
-//export const registerUserService = async ({ email, password }) => {
- //};
-
-//export const loginUserService = async ({ email, password }) => {
-  //}
-
-  //await Session.deleteOne({ userId: user._id });
-
-  //return await Session.create({
-    //userId: user._id,
-    //...createSession(),
-  //});
-//};
 
 export const registerUserService = async ({ email, password }) => {
   const existingUser = await registerUser.findOne({ email });
@@ -59,11 +45,18 @@ export const registerUserService = async ({ email, password }) => {
   delete userData.password;
 
   // Створення access токена
-  const accessToken = jwt.sign({ userId: newUser._id }, process.env.ACCESS_SECRET, {
-    expiresIn: process.env.JWT_ACC_EXPIRES_IN,
+  //   const accessToken = jwt.sign({ userId: newUser._id }, process.env.ACCESS_SECRET, {
+  //     expiresIn: process.env.JWT_ACC_EXPIRES_IN,
+  //   });
+
+  await Session.deleteOne({ userId: userData._id });
+
+  const session = await Session.create({
+    userId: userData._id,
+    ...createSession(),
   });
 
-  return { userData, accessToken };
+  return { userData, accessToken: session.accessToken };
 };
 
 export const loginUserService = async ({ email, password }) => {
@@ -86,6 +79,7 @@ export const loginUserService = async ({ email, password }) => {
 
   return { session, userId: user._id };
 };
+
 export const refreshSessionService = async ({ sessionId, refreshToken }) => {
   const session = await Session.findOneAndDelete({ refreshToken });
 

@@ -27,13 +27,18 @@ export const getTotalUsers = async (req, res) => {
     // Підрахунок загальної кількості користувачів у базі даних
     const totalUsers = await User.countDocuments();
 
-    // Відправка відповіді з кількістю користувачів
-    res.status(200).json({ totalUsers });
+    // Отримання списку користувачів з полями _id та name
+    const users = await User.find({}, '_id name');
+
+    // Відправка відповіді з кількістю користувачів та списком користувачів
+    res.status(200).json({ totalUsers, users });
   } catch (error) {
     // Обробка помилок
     res.status(500).json({ message: 'Server Error', error });
   }
 };
+
+
 
 export const registerUserController = async (req, res, next) => {
   try {

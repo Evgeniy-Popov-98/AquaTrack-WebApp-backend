@@ -45,7 +45,7 @@ router.post(
 
 router.get('/current', authenticate, ctrlWrapper(getCurrentAccauntController));
 
-router.get('/:userId', authenticate, ctrlWrapper(getFindtUserController));
+router.get('/:userId', ctrlWrapper(getFindtUserController));
 
 router.patch(
   '/update',

@@ -6,21 +6,31 @@ import {
   loginUserController,
   sendResetPasswordEmailController,
   resetPasswordController,
+  getOAuthUrlController,
+  verifyGoogleOAuthController,
+  getTotalUsers,
 } from '../controllers/authController.js';
 import {
-  getCurrentUserController,
+  getFindtUserController,
   updateUserController,
   refreshTokensController,
   logoutUserController,
+  getCurrentAccauntController,
 } from '../controllers/userController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
-import { registerUserSchema, requestResetEmailSchema, resetPasswordSchema } from '../validation/registerUserSchema.js';
+import {
+  registerUserSchema,
+  requestResetEmailSchema,
+  resetPasswordSchema,
+} from '../validation/registerUserSchema.js';
 import { loginUserSchema } from '../validation/loginUserSchema.js';
 import { userSchema } from '../validation/userSchema.js';
 import { upload } from '../middleware/update.js';
+import { validateGoogleOAuthSchema } from '../validation/validateGoogleOAuth.js';
 
 const router = Router();
 
+router.get('/total-users', getTotalUsers);
 router.post(
   '/register',
   validateBody(registerUserSchema),
@@ -33,14 +43,12 @@ router.post(
   ctrlWrapper(loginUserController),
 );
 
-router.get(
-  '/:userId',
-  authenticate,
-  ctrlWrapper(getCurrentUserController),
-);
+router.get('/current', authenticate, ctrlWrapper(getCurrentAccauntController));
+
+router.get('/:userId', authenticate, ctrlWrapper(getFindtUserController));
 
 router.patch(
-  '/:userId',
+  '/update',
   authenticate,
   validateBody(userSchema),
   upload.single('avatar'),
@@ -67,4 +75,11 @@ router.post(
   ctrlWrapper(resetPasswordController),
 );
 
+router.post('/get-oauth-url', ctrlWrapper(getOAuthUrlController));
+
+router.post(
+  '/verify-google-oauth',
+  validateBody(validateGoogleOAuthSchema),
+  ctrlWrapper(verifyGoogleOAuthController),
+);
 export default router;

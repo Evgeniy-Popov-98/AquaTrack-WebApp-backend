@@ -6,7 +6,7 @@ export const createWaterController = async (req, res) => {
   const userId = req.user._id;
   const { body } = req;
 
-  const water = await createWater(body, userId);
+  const water = await createWater(userId, body);
 
   res.status(201).json({
     status: 201,
@@ -34,7 +34,7 @@ export const patchWaterController = async (req, res, next) => {
   res.json({
     status: 200,
     message: `Successfully patched a record about consumed amount of water!`,
-    data: result.water,
+    data: result.value,
   });
 };
 

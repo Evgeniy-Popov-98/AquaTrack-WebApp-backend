@@ -9,7 +9,7 @@ import { generateOAuthURL } from '../utils/googleOAuth.js';
 import { REFRESH_TOKEN_LIFE_TIME } from '../constants/constants.js';
 import { validateGoogleOAuthSchema } from '../validation/validateGoogleOAuth.js';
 import User from "../db/models/User.js";
-
+import createHttpError  from 'http-errors';
 const setupSession = (res, session) => {
   res.cookie('sessionId', session._id, {
     httpOnly: true,
@@ -35,31 +35,67 @@ export const getTotalUsers = async (req, res) => {
   }
 };
 
+//export const registerUserController = async (req, res, next) => {
+  //const { email, password } = req.body;
+
+  //const userData = await registerUserService({ email, password });
+
+  //res.status(201).json({
+    //status: 201,
+    //message: 'Successfully registered a user!',
+    //data: userData,
+  ///});
+//};
+
+//export const loginUserController = async (req, res, next) => {
+  //const { email, password } = req.body;
+
+  //const session = await loginUserService({ email, password });
+
+  //setupSession(res, session);
+
+  //res.status(200).json({
+   // status: 200,
+   // message: 'Successfully logged in a user!',
+    //data: { accessToken: session.accessToken },
+  //});
+//};
+
+
+
+
 export const registerUserController = async (req, res, next) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
+    const { userData, accessToken } = await registerUserService({ email, password });
 
-  const userData = await registerUserService({ email, password });
-
-  res.status(201).json({
-    status: 201,
-    message: 'Successfully registered a user!',
-    data: userData,
-  });
+    res.status(201).json({
+      status: 201,
+      message: 'Successfully registered a user!',
+      data: { user: userData, accessToken },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 
 export const loginUserController = async (req, res, next) => {
-  const { email, password } = req.body;
+  try {
+    const { email, password } = req.body;
+    const { session, userId } = await loginUserService({ email, password });
 
-  const session = await loginUserService({ email, password });
+    setupSession(res, session);
 
-  setupSession(res, session);
-
-  res.status(200).json({
-    status: 200,
-    message: 'Successfully logged in a user!',
-    data: { accessToken: session.accessToken },
-  });
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully logged in a user!',
+      data: { userId, accessToken: session.accessToken },
+    });
+  } catch (error) {
+    next(error);
+  }
 };
+
 
 export const sendResetPasswordEmailController = async (req, res) => {
   await sendResetPasswordEmail(req.body.email);

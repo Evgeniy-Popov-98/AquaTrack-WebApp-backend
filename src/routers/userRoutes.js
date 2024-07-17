@@ -11,12 +11,11 @@ import {
   getTotalUsers
 } from '../controllers/authController.js';
 import {
-  getCurrentUserController,
+  getFindtUserController,
   updateUserController,
   refreshTokensController,
   logoutUserController,
-  getCurrentController
-  
+  getCurrentAccauntController 
 } from '../controllers/userController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
 import { registerUserSchema, requestResetEmailSchema, resetPasswordSchema } from '../validation/registerUserSchema.js';
@@ -41,15 +40,15 @@ router.post(
   ctrlWrapper(loginUserController),
 );
 
-router.get("/current", authenticate, ctrlWrapper(getCurrentController));
+router.get("/current", authenticate, ctrlWrapper(getCurrentAccauntController ));
 router.get(
   '/:userId',
   authenticate,
-  ctrlWrapper(getCurrentUserController),
+  ctrlWrapper(getFindtUserController),
 );
 
 router.patch(
-  '/:userId',
+  '/update',
   authenticate,
   validateBody(userSchema),
   upload.single('avatar'),

@@ -31,7 +31,7 @@ export const removeSensitiveFields = (user) => {
 
 
 
-export const getCurrentController = (req, res, next) => {
+export const getCurrentAccauntController = (req, res, next) => {
   try {
     // Отримуємо користувача з об'єкта req, який був попередньо заповнений middleware authenticate
     const user = req.user;
@@ -60,7 +60,7 @@ export const getCurrentController = (req, res, next) => {
   }
 };
 
-export const getCurrentUserController = async (req, res, next) => {
+export const getFindtUserController = async (req, res, next) => {
   const userId = req.params;
 
   const user = await getUser(userId);
@@ -77,30 +77,57 @@ export const getCurrentUserController = async (req, res, next) => {
   });
 };
 
-export const updateUserController = async (req, res, next) => {
-  const { body } = req;
-  const { userId } = req.params;
-  const avatar = req.file;
+//export const updateUserController = async (req, res, next) => {
+  //const { body } = req;
+  //const { userId } = req.params;
+  //const avatar = req.file;
 
-  try {
-    let updatedUser;
+  //try {
+    //let updatedUser;
 
-    if (avatar) {
-      const avatarUrl = await saveFile(avatar);
-      updatedUser = await updateUserService(userId, {
-        ...body,
-        avatar: avatarUrl,
-      });
-    } else {
-      updatedUser = await updateUserService(userId, { ...body });
-    }
+    //if (avatar) {
+      //const avatarUrl = await saveFile(avatar);
+      //updatedUser = await updateUserService(userId, {
+        //...body,
+        //avatar: avatarUrl,
+      //});
+    //} else {
+      //updatedUser = await updateUserService(userId, { ...body });
+    //}
 
-    if (!updatedUser) {
-      throw createHttpError(404, { message: 'User not found' });
-    }
+    //if (!updatedUser) {
+      //throw createHttpError(404, { message: 'User not found' });
+    //}
 
     // Видаляємо пароль та __v з відповіді
-    const user = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
+    //const user = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
+    //const userData = removeSensitiveFields(user);
+
+    //res.status(200).json({
+      //status: 200,
+      //message: 'User updated successfully',
+      //data: userData,
+    //});
+  //} catch (error) {
+    //next(error);
+  //}
+//};
+
+
+
+export const updateUserController = async (req, res, next) => {
+  try {
+    let avatarUrl;
+    if (req.file) {
+      avatarUrl = await saveFile(req.file); // Зберігаємо аватар користувача
+      req.body.avatar = avatarUrl; // Додаємо URL аватара в тіло запиту
+    }
+
+    console.log('Received userId:', req.user._id); // Логуємо userId для відстеження
+    const updatedUser = await updateUserService(req.user._id, req.body, avatarUrl); // Оновлюємо користувача через сервіс
+
+    // Видаляємо чутливі поля з відповіді
+ const user = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
     const userData = removeSensitiveFields(user);
 
     res.status(200).json({
@@ -112,6 +139,7 @@ export const updateUserController = async (req, res, next) => {
     next(error);
   }
 };
+
 
 export const refreshTokensController = async (req, res, next) => {
   const { sessionId, refreshToken } = req.cookies;

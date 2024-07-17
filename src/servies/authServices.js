@@ -27,6 +27,20 @@ const createSession = () => {
   };
 };
 
+//export const registerUserService = async ({ email, password }) => {
+ //};
+
+//export const loginUserService = async ({ email, password }) => {
+  //}
+
+  //await Session.deleteOne({ userId: user._id });
+
+  //return await Session.create({
+    //userId: user._id,
+    //...createSession(),
+  //});
+//};
+
 export const registerUserService = async ({ email, password }) => {
   const existingUser = await registerUser.findOne({ email });
 
@@ -44,29 +58,34 @@ export const registerUserService = async ({ email, password }) => {
   delete userData.__v;
   delete userData.password;
 
-  return userData;
+  // Створення access токена
+  const accessToken = jwt.sign({ userId: newUser._id }, process.env.ACCESS_SECRET, {
+    expiresIn: process.env.JWT_ACC_EXPIRES_IN,
+  });
+
+  return { userData, accessToken };
 };
 
 export const loginUserService = async ({ email, password }) => {
-  const user = await User.findOne({ email });
+  const user = await registerUser.findOne({ email });
   if (!user || !(await bcrypt.compare(password, user.password))) {
     throw createHttpError(401, 'Invalid email or password');
   }
 
   const isEqual = await bcrypt.compare(password, user.password);
-
   if (!isEqual) {
     throw createHttpError(401, 'Unauthorized');
   }
 
   await Session.deleteOne({ userId: user._id });
 
-  return await Session.create({
+  const session = await Session.create({
     userId: user._id,
     ...createSession(),
   });
-};
 
+  return { session, userId: user._id };
+};
 export const refreshSessionService = async ({ sessionId, refreshToken }) => {
   const session = await Session.findOneAndDelete({ refreshToken });
 

@@ -6,6 +6,8 @@ export const getUser = async ({ userId }) => {
   return user;
 };
 
+
+
 export const updateUserService = async (userId, payload, options = {}) => {
   const result = await User.findByIdAndUpdate({ _id: userId }, payload, {
     new: true,

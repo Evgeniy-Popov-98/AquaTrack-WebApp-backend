@@ -27,6 +27,39 @@ export const removeSensitiveFields = (user) => {
   return userData;
 };
 
+
+
+
+
+export const getCurrentController = (req, res, next) => {
+  try {
+    // Отримуємо користувача з об'єкта req, який був попередньо заповнений middleware authenticate
+    const user = req.user;
+
+    // Перевіряємо, що користувач знайдений
+    if (!user) {
+      throw createHttpError(401, 'User not authenticated');
+    }
+
+    // Створюємо новий об'єкт користувача без чутливих даних
+    const sanitizedUser = {
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      gender: user.gender,
+      weight: user.weight,
+      activeSportsTime: user.activeSportsTime,
+      dailyWaterIntake: user.dailyWaterIntake,
+      avatar: user.avatar,
+    };
+
+    // Відправляємо користувача відповідь
+    res.status(200).json({ user: sanitizedUser });
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getCurrentUserController = async (req, res, next) => {
   const userId = req.params;
 

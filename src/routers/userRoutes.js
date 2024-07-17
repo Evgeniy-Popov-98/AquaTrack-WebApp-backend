@@ -15,6 +15,7 @@ import {
   updateUserController,
   refreshTokensController,
   logoutUserController,
+  getCurrentController
   
 } from '../controllers/userController.js';
 import { authenticate } from '../middleware/authMiddleware.js';
@@ -40,6 +41,7 @@ router.post(
   ctrlWrapper(loginUserController),
 );
 
+router.get("/current", authenticate, ctrlWrapper(getCurrentController));
 router.get(
   '/:userId',
   authenticate,

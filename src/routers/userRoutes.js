@@ -31,12 +31,15 @@ import { validateGoogleOAuthSchema } from '../validation/validateGoogleOAuth.js'
 const router = Router();
 
 router.get('/total-users', getTotalUsers);
+
+router.get('/:userId', ctrlWrapper(getFindtUserController));
+
+
 router.post(
   '/register',
   validateBody(registerUserSchema),
   ctrlWrapper(registerUserController),
 );
-
 router.post(
   '/login',
   validateBody(loginUserSchema),
@@ -45,7 +48,7 @@ router.post(
 
 router.get('/current', authenticate, ctrlWrapper(getCurrentAccauntController));
 
-router.get('/:userId', ctrlWrapper(getFindtUserController));
+
 
 router.patch(
   '/update',

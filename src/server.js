@@ -1,4 +1,5 @@
 import express from 'express';
+import pino from 'pino-http';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import rootRouter from './routers/index.js';
@@ -13,12 +14,26 @@ import { swaggerDocs } from './middleware/swaggerDocs.js';
 export const setupServer = () => {
   const app = express();
 
-  app.use(cors());
   app.use(cookieParser());
-  app.use(express.json());
+
+  app.use(
+    express.json({
+      type: ['application/json', 'application/vnd.api+json'],
+      limit: '100kb',
+    }),
+  );
+  app.use(cors());
+
+  app.use(
+    pino({
+      transport: {
+        target: 'pino-pretty',
+      },
+    }),
+  );
+
   app.use('/uploads', express.static(UPLOAD_DIR));
   app.use('/api-docs', swaggerDocs());
-
   app.use(rootRouter);
 
   app.use('*', notFoundHandler);

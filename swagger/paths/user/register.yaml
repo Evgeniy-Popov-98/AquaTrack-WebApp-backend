@@ -1,5 +1,5 @@
 tags:
-  - Users
+  - User
 summary: Register a new user
 operationId: registerUserService
 description: Register a new user
@@ -40,38 +40,37 @@ responses:
             data:
               type: object
               properties:
-                name:
-                  description: 'New user name'
-                  type: string
-                  example: Big Boss
-                email:
-                  description: 'New user email'
-                  type: string
-                  example: bosini@example.com
-                userID:
-                  description: 'New user id (auto-generated)'
-                  type: string
-                  example: 5f9f1c0b0b0b0b0b0b0b0b0b
-                gender:
-                  description: User's gender
-                  type: string
-                  example: man
-                weight:
-                  description: User's weight
-                  type: string
-                  example: '70'
-                activeSportsTime:
-                  description: User's sports time
-                  type: string
-                  example: '2'
-                dailyWaterIntake:
-                  description: 'Daily water intake'
-                  type: string
-                  example: '2'
-                avatar:
-                  description: User's weight
-                  type: string
-                  example: '70'
+                user:
+                  type: object
+                  properties:
+                    name:
+                      type: string
+                      example: Big Boss
+                    email:
+                      type: string
+                      example: bosini@example.com
+                    userID:
+                      type: string
+                      example: 5f9f1c0b0b0b0b0b0b0b0b0b
+                    gender:
+                      type: string
+                      example: man
+                    weight:
+                      type: string
+                      example: '70'
+                    activeSportsTime:
+                      type: string
+                      example: '2'
+                    dailyWaterIntake:
+                      type: string
+                      example: '2'
+                    avatar:
+                      type: string
+                      example: '70'
+            access_token:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+
   '400':
     $ref: ../../components/responses/400.yaml
   '409':

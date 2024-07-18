@@ -1,7 +1,7 @@
 tags:
-  - Auth
+  - User
 summary: Login user
-operationId: loginUser
+operationId: loginUserService
 description: login user
 security:
   - bearerAuth: []
@@ -27,7 +27,7 @@ requestBody:
 
 responses:
   '200':
-    description: Successfully logged in!
+    description: Successfully logged in a user!
     content:
       application/json:
         schema:
@@ -37,13 +37,16 @@ responses:
               example: 200
             message:
               type: string
-              example: Successfully logged in!
+              example: Successfully logged in a user!
             data:
               type: object
               properties:
                 access_token:
                   type: string
                   example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+                userId:
+                  type: string
+                  example: 5f9f1c0b0b0b0b0b0b0b0b0b
   '400':
     $ref: '../../components/responses/400.yaml'
   '401':

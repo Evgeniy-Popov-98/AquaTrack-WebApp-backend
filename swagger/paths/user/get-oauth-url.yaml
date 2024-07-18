@@ -1,8 +1,8 @@
 tags:
   - User
-summary: Reset password
-operationId: resetPassword
-description: Reset password
+summary: Get oauth url
+operationId: generateOAuthURL
+description: Generate oauth url
 security: []
 requestBody:
   content:

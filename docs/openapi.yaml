@@ -29,18 +29,30 @@ paths:
   # /users/total-users:
   #   get:
   #     $ref: ../swagger/paths/user/get.yaml
-
-  /users/login:
-    post:
-      $ref: ../swagger/paths/user/login.yaml
-
-  /users/logout:
-    post:
-      $ref: ../swagger/paths/user/logout.yaml
-
   /users/register:
     post:
       $ref: ../swagger/paths/user/register.yaml
+  /users/login:
+    post:
+      $ref: ../swagger/paths/user/login.yaml
+  /users/logout:
+    post:
+      $ref: ../swagger/paths/user/logout.yaml
+  /users/refresh-tokens:
+    post:
+      $ref: ../swagger/paths/user/refresh.yaml
+  /users/send-reset-email:
+    post:
+      $ref: ../swagger/paths/user/send-reset-email.yaml
+  /users/reset-password:
+    post:
+      $ref: ../swagger/paths/user/reset-password.yaml
+  /users/get-oauth-url:
+    post:
+      $ref: ../swagger/paths/user/get-oauth-url.yaml
+  /users/verify-google-oauth:
+    post:
+      $ref: ../swagger/paths/user/verify-google-oauth.yaml
 
 components:
   securitySchemes:

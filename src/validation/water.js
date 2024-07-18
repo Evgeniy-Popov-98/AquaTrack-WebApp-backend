@@ -7,6 +7,9 @@ export const createWaterSchema = Joi.object({
     'number.max': 'Amount of water should have at most {#limit} ml',
     'any.required': '{#label} is required',
   }),
+  date: Joi.string().required().messages({
+    'any.required': 'Date is required',
+  }),
 });
 
 export const updateWaterSchema = Joi.object({

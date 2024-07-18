@@ -13,6 +13,7 @@ tags:
   - name: user
     description: User operations.
 servers:
+  # - url: http://localhost:3000
   - url: https://aquatrack-webapp-backend.onrender.com
 paths:
   /water:
@@ -24,6 +25,10 @@ paths:
       $ref: ../swagger/paths/water/{id}/delete.yaml
     patch:
       $ref: ../swagger/paths/water/{id}/patch.yaml
+
+  /users/register:
+    post:
+      $ref: ../swagger/paths/user/register.yaml
 
 components:
   securitySchemes:

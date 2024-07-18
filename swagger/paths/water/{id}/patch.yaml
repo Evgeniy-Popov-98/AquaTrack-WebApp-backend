@@ -1,5 +1,5 @@
 tags:
-  - water
+  - Water
 summary: Update water
 operationId: patchWater
 description: Patch a water with payload

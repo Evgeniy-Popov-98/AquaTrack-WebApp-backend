@@ -32,7 +32,7 @@ const router = Router();
 
 router.get('/total-users', getTotalUsers);
 
-router.get('/:userId', ctrlWrapper(getFindtUserController));
+
 
 
 router.post(
@@ -57,6 +57,8 @@ router.patch(
   upload.single('avatar'),
   ctrlWrapper(updateUserController),
 );
+router.get('/:userId', ctrlWrapper(getFindtUserController));
+
 
 router.post(
   '/refresh-tokens',

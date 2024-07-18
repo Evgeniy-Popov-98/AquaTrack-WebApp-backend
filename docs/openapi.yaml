@@ -26,6 +26,18 @@ paths:
     patch:
       $ref: ../swagger/paths/water/{id}/patch.yaml
 
+  # /users/total-users:
+  #   get:
+  #     $ref: ../swagger/paths/user/get.yaml
+
+  /users/login:
+    post:
+      $ref: ../swagger/paths/user/login.yaml
+
+  /users/logout:
+    post:
+      $ref: ../swagger/paths/user/logout.yaml
+
   /users/register:
     post:
       $ref: ../swagger/paths/user/register.yaml

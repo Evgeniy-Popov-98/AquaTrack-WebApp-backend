@@ -1,8 +1,8 @@
 tags:
-  - User
+  - Users
 summary: Register a new user
 operationId: registerUserService
-description: register a new user
+description: Register a new user
 security:
   - bearerAuth: []
 
@@ -13,14 +13,9 @@ requestBody:
       schema:
         type: object
         required:
-          - username
           - email
           - password
         properties:
-          name:
-            description: username
-            type: string
-            example: Big Boss
           email:
             type: string
             format: email
@@ -46,29 +41,41 @@ responses:
               type: object
               properties:
                 name:
-                  description: New user name
+                  description: 'New user name'
                   type: string
                   example: Big Boss
                 email:
-                  description: New user email
+                  description: 'New user email'
                   type: string
                   example: bosini@example.com
-                _id:
-                  description: New user id (auto-generated)
+                userID:
+                  description: 'New user id (auto-generated)'
                   type: string
                   example: 5f9f1c0b0b0b0b0b0b0b0b0b
-                createdAt:
-                  description: Timestamp (auto-generated)
+                gender:
+                  description: User's gender
                   type: string
-                  example: 2024-06-16T11:57:49.764Z
-                updatedAt:
-                  description: Timestamp (auto-generated)
+                  example: man
+                weight:
+                  description: User's weight
                   type: string
-                  example: 2024-06-16T11:57:49.764Z
+                  example: '70'
+                activeSportsTime:
+                  description: User's sports time
+                  type: string
+                  example: '2'
+                dailyWaterIntake:
+                  description: 'Daily water intake'
+                  type: string
+                  example: '2'
+                avatar:
+                  description: User's weight
+                  type: string
+                  example: '70'
   '400':
     $ref: ../../components/responses/400.yaml
   '409':
-    description: User is already registered!
+    description: Email already in use!
     content:
       application/json:
         schema:
@@ -84,6 +91,6 @@ responses:
               properties:
                 message:
                   type: string
-                  example: Conflict. User is already registered!
+                  example: Conflict. Email already in use!
   '500':
     $ref: ../../components/responses/500.yaml

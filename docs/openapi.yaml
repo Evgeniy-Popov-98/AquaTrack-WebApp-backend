@@ -53,6 +53,9 @@ paths:
   /users/verify-google-oauth:
     post:
       $ref: ../swagger/paths/user/verify-google-oauth.yaml
+  /users/:userId:
+    get:
+      $ref: ../swagger/paths/user/{userId}/get.yaml
 
 components:
   securitySchemes:

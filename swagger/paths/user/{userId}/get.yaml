@@ -1,0 +1,60 @@
+tags:
+  - User
+summary: Get user information
+operationId: getUser
+parameters:
+  - in: path
+    name: userId
+    required: true
+    description: User identifier
+    schema:
+      type: string
+security:
+  - bearerAuth: []
+responses:
+  '200':
+    description: Successful retrieval of user information
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Successfully found user!'
+            data:
+              type: object
+              properties:
+                userId:
+                  type: string
+                name:
+                  type: string
+                email:
+                  type: string
+                gender:
+                  oneOf:
+                    - type: string
+                    - type: 'null'
+                weight:
+                  oneOf:
+                    - type: number
+                    - type: 'null'
+                activeSportsTime:
+                  oneOf:
+                    - type: number
+                    - type: 'null'
+                dailyWaterIntake:
+                  oneOf:
+                    - type: number
+                    - type: 'null'
+                avatar:
+                  oneOf:
+                    - type: string
+                    - type: 'null'
+  '404':
+    $ref: '../../../components/responses/404.yaml'
+  '500':
+    $ref: '../../../components/responses/500.yaml'

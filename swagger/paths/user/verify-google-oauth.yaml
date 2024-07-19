@@ -8,23 +8,17 @@ security:
 parameters:
   - name: code
     in: query
-    description: Data for Google OAuth verification
+    description: Google OAuth code
     required: true
-    content:
-      schema:
-        type: object
-        required:
-          - code
-        properties:
-          code:
-            type: string
-            description: Google OAuth code
+    schema:
+      type: string
 responses:
   '200':
     description: Successful verification
     content:
       application/json:
         schema:
+          type: object
           properties:
             status:
               type: integer

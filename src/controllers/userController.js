@@ -6,9 +6,10 @@ import {
 } from '../servies/authServices.js';
 import { saveFile } from '../utils/cloudinary/saveFile.js';
 import { REFRESH_TOKEN_LIFE_TIME } from '../constants/constants.js';
+// import User from '../db/models/User.js';
 
 const setupSession = (res, session) => {
-  res.cookie('sessionId', session._id, {
+  res.cookie('sessionId', session._id.toString(), {
     httpOnly: true,
     expires: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
   });
@@ -139,11 +140,20 @@ export const updateUserController = async (req, res, next) => {
 };
 
 export const refreshTokensController = async (req, res, next) => {
+  // const userId = req.user.id;
+  // const user = await User.findById(userId);
+
+  // if (!user) {
+  //   return res.status(404).json({ message: 'User not found' });
+  // }
+
+  console.log('Cookies received refresh:', req.cookies);
+
   const { sessionId, refreshToken } = req.cookies;
 
   // Перевірка наявності необхідних даних у запиті
   if (!sessionId || !refreshToken) {
-    console.log("refresh controller", sessionId, refreshToken);
+    console.log('refresh controller', sessionId, refreshToken);
     return res.status(400).json({
       status: 400,
       message: 'Session ID and Refresh Token are required',
@@ -156,17 +166,8 @@ export const refreshTokensController = async (req, res, next) => {
     refreshToken,
   });
 
-  if (!session) {
-    return res.status(401).json({
-      status: 401,
-      message: 'Invalid session or refresh token',
-    });
-  }
-
-  // Налаштування нових куків
   setupSession(res, session);
 
-  // Відповідь на запит
   res.status(200).json({
     status: 200,
     message: 'Successfully refreshed a session!',

@@ -85,6 +85,7 @@ export const fetchMonthlyService = async (userId, dateString) => {
   const startDate = new Date(Date.UTC(year, month - 1, 1));
   const endDate = new Date(Date.UTC(year, month, 1));
 
+  // Знаходимо дані про споживання води за місяць
   const monthlyConsumption = await WaterCollection.find({
     userId,
     createdAt: {
@@ -93,13 +94,49 @@ export const fetchMonthlyService = async (userId, dateString) => {
     },
   });
 
-   if (!monthlyConsumption || monthlyConsumption.length === 0) {
+  if (!monthlyConsumption || monthlyConsumption.length === 0) {
     throw new Error('Data for the specified month was not found');
   }
 
-  return formatResponse(dateString, monthlyConsumption);
-};
+  // Отримуємо користувача для доступу до денної норми води
+  const user = await User.findById(userId);
+  if (!user) {
+    throw new Error('User not found');
+  }
 
-// data {
-//   [20, 50, 0, ]
-// }
+  const dailyWaterIntake = user.dailyWaterIntake; // Денна норма води
+
+  // Створюємо об'єкт для зберігання споживання води за кожен день
+  const dailyConsumptionMap = {};
+  const daysInMonth = new Date(year, month, 0).getDate();
+  let totalMonthlyConsumption = 0;
+
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dayKey = `${year}-${month.padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    dailyConsumptionMap[dayKey] = 0;
+  }
+
+  // Заповнюємо об'єкт даними про споживання води
+  monthlyConsumption.forEach(record => {
+    const dayKey = record.createdAt.toISOString().slice(0, 10);
+    dailyConsumptionMap[dayKey] += record.amountOfWater;
+    totalMonthlyConsumption += record.amountOfWater;
+  });
+
+  // Формуємо масив з результатами
+  const dailyResults = [];
+  for (const [date, totalConsumption] of Object.entries(dailyConsumptionMap)) {
+    const consumptionPercentage = (totalConsumption / dailyWaterIntake) * 100;
+    dailyResults.push({
+      date,
+      totalConsumption,
+      consumptionPercentage,
+    });
+  }
+
+  return {
+    month: dateString,
+    totalMonthlyConsumption,
+    dailyResults,
+  };
+};

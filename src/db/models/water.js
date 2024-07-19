@@ -3,7 +3,7 @@ import { Schema, model } from 'mongoose';
 const waterSchema = new Schema(
   {
     amountOfWater: { type: Number, required: true },
-    date: { type: String },
+    date: { type: String, required: true },
     month: { type: String },
     userId: {
       type: Schema.Types.ObjectId,

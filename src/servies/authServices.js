@@ -97,16 +97,29 @@ export const refreshSessionService = async ({ sessionId, refreshToken }) => {
   });
 };
 
-export const logoutUserService = async ({ sessionId, refreshToken }) => {
-  const session = await Session.deleteOne({
-    _id: sessionId,
-    refreshToken,
-  });
 
-  if (!session) {
-    throw createHttpError(401, 'Session not found');
+
+export const logoutUserService = async ({ sessionId, refreshToken }) => {
+  try {
+    console.log('Attempting to delete session with sessionId:', sessionId, 'and refreshToken:', refreshToken);
+
+    const session = await Session.findOne({ _id: sessionId, refreshToken });
+
+    if (!session) {
+      throw new Error('Session not found or invalid refreshToken');
+    }
+
+    console.log('Session found:', session);
+
+    const result = await Session.findOneAndDelete({ _id: sessionId, refreshToken });
+
+    console.log('Session successfully deleted:', result);
+  } catch (error) {
+    console.error('Error deleting session:', error);
+    throw error;
   }
 };
+
 
 export const sendResetPasswordEmail = async (email) => {
   const user = await User.findOne({ email });

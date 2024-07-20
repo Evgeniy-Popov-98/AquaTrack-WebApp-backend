@@ -141,12 +141,12 @@ export const updateUserController = async (req, res, next) => {
 };
 
 export const refreshTokensController = async (req, res, next) => {
-    // const userId = req.user.id;
-    // const user = await User.findById(userId);
+  // const userId = req.user.id;
+  // const user = await User.findById(userId);
   
-    // if (!user) {
-    //   return res.status(404).json({ message: 'User not found' });
-    // }
+  // if (!user) {
+ // return res.status(404).json({ message: 'User not found' });
+  // }
   
   console.log('Cookies received refresh:', req.cookies);
   
@@ -167,19 +167,27 @@ export const refreshTokensController = async (req, res, next) => {
   }
   };
   
-
-export const logoutUserController = async (req, res, next) => {
-  const sessionId = req.cookies.sessionId;
-  const refreshToken = req.cookies.refreshToken;
-
-  //   if (!refreshToken) {
-  //     return next(createHttpError(400, 'Refresh token is required'));
-  //   }
-
-  await logoutUserService({ sessionId, refreshToken });
-
-  res.clearCookie('sessionId');
-  res.clearCookie('refreshToken');
-
-  res.status(204).send();
-};
+  export const logoutUserController = async (req, res, next) => {
+    const sessionId = req.cookies.sessionId;
+    const refreshToken = req.cookies.refreshToken;
+  
+    console.log('Received logout request with sessionId:', sessionId, 'and refreshToken:', refreshToken);
+  
+    if (!sessionId || !refreshToken) {
+      return res.status(400).send({ message: 'Missing sessionId or refreshToken' });
+    }
+  
+    try {
+      await logoutUserService({ sessionId, refreshToken });
+  
+      res.clearCookie('sessionId');
+      res.clearCookie('refreshToken');
+  
+      res.status(204).send();
+  
+      console.log('Cookies cleared and logout response sent');
+    } catch (error) {
+      next(error);
+    }
+  };
+  

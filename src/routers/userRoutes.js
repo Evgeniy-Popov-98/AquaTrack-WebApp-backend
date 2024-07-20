@@ -32,9 +32,6 @@ const router = Router();
 
 router.get('/total-users', getTotalUsers);
 
-router.get('/:userId', ctrlWrapper(getFindtUserController));
-
-
 router.post(
   '/register',
   validateBody(registerUserSchema),
@@ -48,7 +45,7 @@ router.post(
 
 router.get('/current', authenticate, ctrlWrapper(getCurrentAccauntController));
 
-
+router.get('/:userId', ctrlWrapper(getFindtUserController));
 
 router.patch(
   '/update',

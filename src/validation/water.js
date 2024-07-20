@@ -17,14 +17,5 @@ export const updateWaterSchema = Joi.object({
     'number.min': 'Amount of water should have at least {#limit} ml',
     'number.max': 'Amount of water should have at most {#limit} ml',
   }),
-});
-
-export const dailyConsumptionSchema = Joi.object({
   date: Joi.string(),
-  consumption: Joi.string(),
-});
-
-export const monthlyConsumptionSchema = Joi.object({
-  month: Joi.string(),
-  consumption: Joi.string(),
 });

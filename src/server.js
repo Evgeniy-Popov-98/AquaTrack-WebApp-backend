@@ -14,15 +14,20 @@ export const setupServer = () => {
   const app = express();
 
   app.use(cookieParser());
-  app.use(express.json({
-    type: ['application/json', 'application/vnd.api+json'],
-    limit: '100kb',
-  }));
-  app.use(cors({
-    origin: 'https://aqua-track-web-app-frontend.vercel.app/',
-    // origin: 'http://localhost:5173',
-    credentials: true,
-  }));
+  app.use(
+    express.json({
+      type: ['application/json', 'application/vnd.api+json'],
+      limit: '100kb',
+    }),
+  );
+  app.use(
+    cors(),
+    //   {
+    //   origin: 'https://aqua-track-web-app-frontend.vercel.app/',
+    //   origin: 'http://localhost:5173',
+    //   credentials: true,
+    //   }
+  );
 
   app.use(
     pino({

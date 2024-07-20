@@ -83,14 +83,18 @@ export const loginUserService = async ({ email, password }) => {
 export const refreshSessionService = async ({ sessionId, refreshToken }) => {
   const session = await Session.findOne({ _id: sessionId, refreshToken });
 
+  // Перевірка чи наявна сессія
   if (!session) throw createHttpError(401, 'Session not found');
 
+  // Перевірка терміну дії токена сесії
   if (!session || session.refreshTokenValidUntil < new Date()) {
     throw createHttpError(401, 'Invalid or expired refresh token');
   }
 
+  // Видалення попередньої сессії
   await Session.deleteOne({ _id: sessionId });
 
+  // Створення нової сессії в базі і повернення клієнту
   return await Session.create({
     userId: session.userId,
     ...createSession(),

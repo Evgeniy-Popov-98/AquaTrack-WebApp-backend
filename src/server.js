@@ -18,7 +18,11 @@ export const setupServer = () => {
     type: ['application/json', 'application/vnd.api+json'],
     limit: '100kb',
   }));
-  app.use(cors());
+  app.use(cors({
+    origin: 'https://aqua-track-web-app-frontend.vercel.app/',
+    // origin: 'http://localhost:5173',
+    credentials: true,
+  }));
 
   app.use(
     pino({

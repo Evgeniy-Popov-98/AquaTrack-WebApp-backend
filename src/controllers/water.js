@@ -62,7 +62,7 @@ export const fetchDailyController = async (req, res) => {
 
   const result = await fetchDailyService(userId, date);
 
-  res.json(result);
+  res.status(200).json(result);
 };
 
 export const fetchMonthlyController = async (req, res) => {
@@ -71,5 +71,5 @@ export const fetchMonthlyController = async (req, res) => {
 
   const result = await fetchMonthlyService(userId, month);
 
-  res.json(result);
+  res.status(200).json(result);
 };

@@ -19,16 +19,21 @@ paths:
   /water:
     post:
       $ref: ../swagger/paths/water/post.yaml
-
+  /water/daily/:{date}:
+    get:
+      $ref: ../swagger/paths/water/daily/{date}/get.yaml
+  /water/monthly/:{month}:
+    get:
+      $ref: ../swagger/paths/water/monthly/{month}/get.yaml
   /water/:{id}:
-    delete:
-      $ref: ../swagger/paths/water/{id}/delete.yaml
     patch:
       $ref: ../swagger/paths/water/{id}/patch.yaml
+    delete:
+      $ref: ../swagger/paths/water/{id}/delete.yaml
 
-  # /users/total-users:
-  #   get:
-  #     $ref: ../swagger/paths/user/get.yaml
+  /users/total-users:
+    get:
+      $ref: ../swagger/paths/user/getTotalUsers.yaml
   /users/register:
     post:
       $ref: ../swagger/paths/user/register.yaml
@@ -53,7 +58,7 @@ paths:
   /users/verify-google-oauth:
     post:
       $ref: ../swagger/paths/user/verify-google-oauth.yaml
-  /users/:userId:
+  /users/:{userId}:
     get:
       $ref: ../swagger/paths/user/{userId}/get.yaml
 

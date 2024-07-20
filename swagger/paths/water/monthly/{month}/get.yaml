@@ -1,0 +1,54 @@
+tags:
+  - Water
+summary: Get monthly water consumption
+description: Get monthly water consumption
+operationId: fetchMonthlyService
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: month
+    required: true
+    schema:
+      type: string
+      format: date
+      example: '2022-01'
+responses:
+  '200':
+    description: Successful response with water consumption data.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            month:
+              type: string
+              description: The month for which the data is being fetched.
+              example: '2023-07'
+            totalMonthlyConsumption:
+              type: number
+              description: Total water consumption for the month in liters.
+              example: 75
+            dailyResults:
+              type: array
+              items:
+                type: object
+                properties:
+                  date:
+                    type: string
+                    description: Date in the format YYYY-MM-DD.
+                    example: '2023-07-01'
+                  totalConsumption:
+                    type: number
+                    description: Total water consumption for the day in liters.
+                    example: 2.5
+                  consumptionPercentage:
+                    type: number
+                    description: Percentage of the daily water intake goal consumed.
+                    example: 75
+  '400':
+    $ref: '../../../../components/responses/400.yaml'
+  '404':
+    $ref: '../../../../components/responses/404.yaml'
+  '500':
+    $ref: '../../../../components/responses/500.yaml'

@@ -1,0 +1,37 @@
+tags:
+  - Water
+summary: Get daily water consumption
+description: Get daily water consumption
+operationId: fetchDailyService
+security:
+  - bearerAuth: []
+parameters:
+  - in: path
+    name: date
+    required: true
+    schema:
+      type: string
+      format: date
+      example: '2022-01-01'
+responses:
+  '200':
+    description: Successful response with water consumption data.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            totalConsumption:
+              type: number
+              description: Total water consumption for the day in liters.
+              example: 2.5
+            percentageOfDailyIntake:
+              type: number
+              description: Percentage of the daily water intake goal consumed.
+              example: 75
+  '400':
+    $ref: '../../../../components/responses/400.yaml'
+  '404':
+    $ref: '../../../../components/responses/404.yaml'
+  '500':
+    $ref: '../../../../components/responses/500.yaml'

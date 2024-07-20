@@ -1,6 +1,7 @@
 type: object
 required:
   - amountOfWater
+  - date
   - userId
 properties:
   amountOfWater:

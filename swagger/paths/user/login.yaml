@@ -1,5 +1,5 @@
 tags:
-  - User
+  - user
 summary: Login user
 operationId: loginUserService
 description: login user

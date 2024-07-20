@@ -1,5 +1,5 @@
 tags:
-  - User
+  - user
 summary: Register a new user
 operationId: registerUserService
 description: Register a new user
@@ -43,30 +43,38 @@ responses:
                 user:
                   type: object
                   properties:
-                    name:
-                      type: string
-                      example: Big Boss
-                    email:
-                      type: string
-                      example: bosini@example.com
                     userID:
                       type: string
-                      example: 5f9f1c0b0b0b0b0b0b0b0b0b
+                      description: The user's ID.
+                      example: '60d0fe4f5311236168a109ca'
+                    name:
+                      type: string
+                      description: The user's name.
+                      example: 'John Doe'
+                    email:
+                      type: string
+                      description: The user's email.
+                      example: 'john.doe@example.com'
                     gender:
                       type: string
-                      example: man
+                      description: The user's gender.
+                      example: 'male'
                     weight:
-                      type: string
-                      example: '70'
+                      type: number
+                      description: The user's weight in kg.
+                      example: 75
                     activeSportsTime:
-                      type: string
-                      example: '2'
+                      type: number
+                      description: The user's active sports time in minutes.
+                      example: 30
                     dailyWaterIntake:
-                      type: string
-                      example: '2'
+                      type: number
+                      description: The user's daily water intake in liters.
+                      example: 2.5
                     avatar:
                       type: string
-                      example: '70'
+                      description: URL of the user's avatar.
+                      example: 'https://example.com/avatar.jpg'
             access_token:
               type: string
               example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9

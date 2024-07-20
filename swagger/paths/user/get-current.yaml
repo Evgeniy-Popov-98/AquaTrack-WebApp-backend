@@ -1,0 +1,52 @@
+tags:
+  - user
+summary: Get current user
+description: Retrieves the current authenticated user's information
+operationId: getCurrentAccauntController
+security:
+  - bearerAuth: []
+responses:
+  '200':
+    description: Successful response with the current user's information.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            user:
+              type: object
+              properties:
+                userID:
+                  type: string
+                  description: The user's ID.
+                  example: '60d0fe4f5311236168a109ca'
+                name:
+                  type: string
+                  description: The user's name.
+                  example: 'John Doe'
+                email:
+                  type: string
+                  description: The user's email.
+                  example: 'john.doe@example.com'
+                gender:
+                  type: string
+                  description: The user's gender.
+                  example: 'male'
+                weight:
+                  type: number
+                  description: The user's weight in kg.
+                  example: 75
+                activeSportsTime:
+                  type: number
+                  description: The user's active sports time in minutes.
+                  example: 30
+                dailyWaterIntake:
+                  type: number
+                  description: The user's daily water intake in liters.
+                  example: 2.5
+                avatar:
+                  type: string
+                  description: URL of the user's avatar.
+                  example: 'https://example.com/avatar.jpg'
+  '401':
+    $ref: ../../components/responses/401.yaml

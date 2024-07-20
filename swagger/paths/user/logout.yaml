@@ -1,5 +1,5 @@
 tags:
-  - User
+  - user
 summary: Logout user
 operationId: logoutUserService
 description: logout user

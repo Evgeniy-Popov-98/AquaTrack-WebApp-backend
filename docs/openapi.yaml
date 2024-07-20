@@ -33,13 +33,16 @@ paths:
 
   /users/total-users:
     get:
-      $ref: ../swagger/paths/user/getTotalUsers.yaml
+      $ref: ../swagger/paths/user/get-total-users.yaml
   /users/register:
     post:
       $ref: ../swagger/paths/user/register.yaml
   /users/login:
     post:
       $ref: ../swagger/paths/user/login.yaml
+  /users/current:
+    get:
+      $ref: ../swagger/paths/user/get-current.yaml
   /users/logout:
     post:
       $ref: ../swagger/paths/user/logout.yaml

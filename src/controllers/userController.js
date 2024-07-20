@@ -143,7 +143,7 @@ export const refreshTokensController = async (req, res, next) => {
 
   // Перевірка наявності необхідних даних у запиті
   if (!sessionId || !refreshToken) {
-    console.log("refresh controller", sessionId, refreshToken);
+    console.log('refresh controller', sessionId, refreshToken);
     return res.status(400).json({
       status: 400,
       message: 'Session ID and Refresh Token are required',

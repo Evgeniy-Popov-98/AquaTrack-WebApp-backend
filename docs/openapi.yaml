@@ -30,7 +30,6 @@ paths:
       $ref: ../swagger/paths/water/{id}/patch.yaml
     delete:
       $ref: ../swagger/paths/water/{id}/delete.yaml
-
   /users/total-users:
     get:
       $ref: ../swagger/paths/user/get-total-users.yaml
@@ -43,12 +42,18 @@ paths:
   /users/current:
     get:
       $ref: ../swagger/paths/user/get-current.yaml
-  /users/logout:
-    post:
-      $ref: ../swagger/paths/user/logout.yaml
+  /users/:{userId}:
+    get:
+      $ref: ../swagger/paths/user/{userId}/get.yaml
+  /users/update:
+    patch:
+      $ref: ../swagger/paths/user/update-user.yaml
   /users/refresh-tokens:
     post:
       $ref: ../swagger/paths/user/refresh.yaml
+  /users/logout:
+    post:
+      $ref: ../swagger/paths/user/logout.yaml
   /users/send-reset-email:
     post:
       $ref: ../swagger/paths/user/send-reset-email.yaml
@@ -61,10 +66,6 @@ paths:
   /users/verify-google-oauth:
     post:
       $ref: ../swagger/paths/user/verify-google-oauth.yaml
-  /users/:{userId}:
-    get:
-      $ref: ../swagger/paths/user/{userId}/get.yaml
-
 components:
   securitySchemes:
     bearerAuth:

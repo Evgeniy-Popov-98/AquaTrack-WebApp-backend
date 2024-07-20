@@ -19,7 +19,8 @@ export const setupServer = () => {
     limit: '100kb',
   }));
   app.use(cors({
-    origin: 'http://localhost:5173',
+    origin: 'https://aqua-track-web-app-frontend.vercel.app/',
+    // origin: 'http://localhost:5173',
     credentials: true,
   }));
 

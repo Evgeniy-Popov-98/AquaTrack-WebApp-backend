@@ -141,13 +141,32 @@ export const updateUserController = async (req, res, next) => {
 export const refreshTokensController = async (req, res, next) => {
   const { sessionId, refreshToken } = req.cookies;
 
+  // Перевірка наявності необхідних даних у запиті
+  if (!sessionId || !refreshToken) {
+    console.log("refresh controller", sessionId, refreshToken);
+    return res.status(400).json({
+      status: 400,
+      message: 'Session ID and Refresh Token are required',
+    });
+  }
+
+  // Оновлення сесії
   const session = await refreshSessionService({
     sessionId,
     refreshToken,
   });
 
+  if (!session) {
+    return res.status(401).json({
+      status: 401,
+      message: 'Invalid session or refresh token',
+    });
+  }
+
+  // Налаштування нових куків
   setupSession(res, session);
 
+  // Відповідь на запит
   res.status(200).json({
     status: 200,
     message: 'Successfully refreshed a session!',

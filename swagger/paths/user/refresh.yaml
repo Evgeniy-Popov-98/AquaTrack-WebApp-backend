@@ -4,12 +4,12 @@ summary: Refresh access token
 description: Refresh access token
 operationId: refreshSessionService
 security: []
-# parameters:
-#   - name: refresh_token
-#     in: query
-#     schema:
-#       type: string
-#       example: <refresh_token>
+parameters:
+  - name: refresh_token
+    in: query
+    schema:
+      type: string
+      example: <refresh_token>
 responses:
   '200':
     description: Successfully refreshed a session!

@@ -11,11 +11,11 @@ properties:
   date:
     description: Date of consumption
     type: string
-    example: 2022-01-01
+    example: '2022-01-01'
   month:
     description: Month of consumption
     type: string
-    example: January
+    example: 'January'
   userId:
     description: User id
     type: string

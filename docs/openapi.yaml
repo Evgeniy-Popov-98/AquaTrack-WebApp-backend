@@ -19,17 +19,17 @@ paths:
   /water:
     post:
       $ref: ../swagger/paths/water/post.yaml
+  /water/:{id}:
+    patch:
+      $ref: ../swagger/paths/water/{id}/patch.yaml
+    delete:
+      $ref: ../swagger/paths/water/{id}/delete.yaml
   /water/daily/:{date}:
     get:
       $ref: ../swagger/paths/water/daily/{date}/get.yaml
   /water/monthly/:{month}:
     get:
       $ref: ../swagger/paths/water/monthly/{month}/get.yaml
-  /water/:{id}:
-    patch:
-      $ref: ../swagger/paths/water/{id}/patch.yaml
-    delete:
-      $ref: ../swagger/paths/water/{id}/delete.yaml
   /users/total-users:
     get:
       $ref: ../swagger/paths/user/get-total-users.yaml

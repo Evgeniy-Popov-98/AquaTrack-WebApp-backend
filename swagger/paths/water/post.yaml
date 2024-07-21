@@ -14,7 +14,7 @@ requestBody:
           amountOfWater:
             description: 'Amount of water'
             type: number
-            example: '100'
+            example: 100
           date:
             description: 'Date of consumption'
             type: string
@@ -22,7 +22,7 @@ requestBody:
           month:
             description: 'Month of consumption'
             type: string
-            example: January
+            example: 'January'
           userId:
             description: 'User id'
             type: string
@@ -30,7 +30,7 @@ requestBody:
           consumption:
             description: 'Consumption'
             type: number
-            example: '100'
+            example: 100
 responses:
   '200':
     description: 'Successfully created a water!'
@@ -48,7 +48,7 @@ responses:
               example: 200
             message:
               type: string
-              example: Successfully created a record of the amount of water consumed!
+              example: 'Successfully created a record of the amount of water consumed!'
             data:
               type: object
               $ref: ../../components/schemas/water.yaml

@@ -35,26 +35,27 @@ responses:
                 email:
                   type: string
                 gender:
-                  oneOf:
-                    - type: string
-                    - type: 'null'
+                  type: string
                 weight:
-                  oneOf:
-                    - type: number
-                    - type: 'null'
+                  type: number
                 activeSportsTime:
-                  oneOf:
-                    - type: number
-                    - type: 'null'
+                  type: number
                 dailyWaterIntake:
-                  oneOf:
-                    - type: number
-                    - type: 'null'
+                  type: number
                 avatar:
-                  oneOf:
-                    - type: string
-                    - type: 'null'
+                  type: string
   '404':
-    $ref: '../../../components/responses/404.yaml'
+    description: User not found
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 404
+            message:
+              type: string
+              example: 'User not found'
   '500':
     $ref: '../../../components/responses/500.yaml'

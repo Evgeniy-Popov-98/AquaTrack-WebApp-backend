@@ -5,7 +5,6 @@ operationId: registerUserService
 description: Register a new user
 security:
   - bearerAuth: []
-
 requestBody:
   required: true
   content:
@@ -19,11 +18,11 @@ requestBody:
           email:
             type: string
             format: email
-            example: bosini@example.com
+            example: 'bosini@example.com'
           password:
             type: string
             format: password
-            example: securepassword
+            example: 'securepassword'
 responses:
   '201':
     description: Successfully registered a user!
@@ -78,7 +77,6 @@ responses:
             access_token:
               type: string
               example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
-
   '400':
     $ref: ../../components/responses/400.yaml
   '409':

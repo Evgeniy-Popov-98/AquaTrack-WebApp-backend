@@ -21,7 +21,7 @@ requestBody:
           amountOfWater:
             description: 'Amount of water'
             type: number
-            example: '100'
+            example: 100
           date:
             description: 'Date of consumption'
             type: string
@@ -37,7 +37,7 @@ requestBody:
           consumption:
             description: 'Consumption'
             type: number
-            example: '100'
+            example: 100
 responses:
   '200':
     description: 'Successfully patched a water!'

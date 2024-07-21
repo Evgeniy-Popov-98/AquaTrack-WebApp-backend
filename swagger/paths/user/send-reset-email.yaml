@@ -17,8 +17,7 @@ requestBody:
             type: string
             format: email
             description: user email
-            example: bosini@example.com
-
+            example: 'bosini@example.com'
 responses:
   '200':
     description: Successfully sent a reset email
@@ -31,7 +30,7 @@ responses:
               example: 201
             message:
               type: string
-              example: Reset password email has been successfully sent.
+              example: 'Reset password email has been successfully sent.'
             data:
               type: object
               example: {}

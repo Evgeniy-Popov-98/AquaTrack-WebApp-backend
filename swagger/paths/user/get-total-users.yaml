@@ -22,7 +22,7 @@ responses:
               items:
                 type: object
                 properties:
-                  _id:
+                  userId:
                     type: string
                     description: The user's ID.
                     example: '60d0fe4f5311236168a109ca'

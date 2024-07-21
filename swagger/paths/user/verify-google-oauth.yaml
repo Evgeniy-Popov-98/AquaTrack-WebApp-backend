@@ -1,0 +1,40 @@
+tags:
+  - user
+summary: Verify Google OAuth
+operationId: loginOrSignupWithGoogleOAuth
+description: Verify user through Google OAuth
+security:
+  - bearerAuth: []
+parameters:
+  - name: code
+    in: query
+    description: Google OAuth code
+    required: true
+    schema:
+      type: string
+responses:
+  '200':
+    description: Successful verification
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            status:
+              type: integer
+              example: 200
+            message:
+              type: string
+              example: 'Logged in with Google OAuth!'
+            data:
+              type: object
+              properties:
+                accessToken:
+                  type: string
+                  description: Access token
+  '400':
+    $ref: '../../components/responses/400.yaml'
+  '401':
+    $ref: '../../components/responses/401.yaml'
+  '500':
+    $ref: '../../components/responses/500.yaml'

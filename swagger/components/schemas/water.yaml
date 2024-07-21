@@ -1,0 +1,26 @@
+type: object
+required:
+  - amountOfWater
+  - date
+  - userId
+properties:
+  amountOfWater:
+    description: Amount of water
+    type: number
+    example: 100
+  date:
+    description: Date of consumption
+    type: string
+    example: '2022-01-01'
+  month:
+    description: Month of consumption
+    type: string
+    example: 'January'
+  userId:
+    description: User id
+    type: string
+    example: '6655a67a37bc0571c96d9655'
+  consumption:
+    description: Consumption
+    type: number
+    example: 100

@@ -1,0 +1,38 @@
+type: object
+required:
+  - userId
+  - email
+  - password
+properties:
+  userID:
+    type: string
+    description: The user's ID.
+    example: '60d0fe4f5311236168a109ca'
+  name:
+    type: string
+    description: The user's name.
+    example: 'John Doe'
+  email:
+    type: string
+    description: The user's email.
+    example: 'john.doe@example.com'
+  gender:
+    type: string
+    description: The user's gender.
+    example: 'male'
+  weight:
+    type: number
+    description: The user's weight in kg.
+    example: 75
+  activeSportsTime:
+    type: number
+    description: The user's active sports time in minutes.
+    example: 30
+  dailyWaterIntake:
+    type: number
+    description: The user's daily water intake in liters.
+    example: 2.5
+  avatar:
+    type: string
+    description: URL of the user's avatar.
+    example: 'https://example.com/avatar.jpg'

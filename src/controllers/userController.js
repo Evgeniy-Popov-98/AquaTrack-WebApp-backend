@@ -7,19 +7,17 @@ import {
 import { saveFile } from '../utils/cloudinary/saveFile.js';
 import { REFRESH_TOKEN_LIFE_TIME } from '../constants/constants.js';
 
-
 const setupSession = (res, session) => {
   res.cookie('sessionId', session._id.toString(), {
-   httpOnly: true,
-  expires: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
+    httpOnly: true,
+    expires: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
   });
-  
+
   res.cookie('refreshToken', session.refreshToken, {
-  httpOnly: true,
-   expires: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
+    httpOnly: true,
+    expires: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
   });
-  };
-  
+};
 
 export const removeSensitiveFields = (user) => {
   const userData = user.toObject ? user.toObject() : user;
@@ -75,42 +73,6 @@ export const getFindtUserController = async (req, res, next) => {
   });
 };
 
-//export const updateUserController = async (req, res, next) => {
-//const { body } = req;
-//const { userId } = req.params;
-//const avatar = req.file;
-
-//try {
-//let updatedUser;
-
-//if (avatar) {
-//const avatarUrl = await saveFile(avatar);
-//updatedUser = await updateUserService(userId, {
-//...body,
-//avatar: avatarUrl,
-//});
-//} else {
-//updatedUser = await updateUserService(userId, { ...body });
-//}
-
-//if (!updatedUser) {
-//throw createHttpError(404, { message: 'User not found' });
-//}
-
-// Видаляємо пароль та __v з відповіді
-//const user = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
-//const userData = removeSensitiveFields(user);
-
-//res.status(200).json({
-//status: 200,
-//message: 'User updated successfully',
-//data: userData,
-//});
-//} catch (error) {
-//next(error);
-//}
-//};
-
 export const updateUserController = async (req, res, next) => {
   try {
     let avatarUrl;
@@ -130,64 +92,82 @@ export const updateUserController = async (req, res, next) => {
     const user = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
     const userData = removeSensitiveFields(user);
 
-    res.status(200).json({
-      status: 200,
-      message: 'User updated successfully',
-      data: userData,
-    });
+    res.status(200).json({ user: userData });
   } catch (error) {
     next(error);
   }
 };
 
 export const refreshTokensController = async (req, res, next) => {
-  // const userId = req.user.id;
-  // const user = await User.findById(userId);
-  
-  // if (!user) {
- // return res.status(404).json({ message: 'User not found' });
-  // }
-  
-  console.log('Cookies received refresh:', req.cookies);
-  
-  const { sessionId, refreshToken } = req.cookies;
-  
   try {
-  const session = await refreshSessionService({
-  sessionId,refreshToken,});
-  
-  setupSession(res, session);
-  
-  res.status(200).json({
-  status: 200,
-  message: 'Successfully refreshed a session!',
-  data: { accessToken: session.accessToken },});
-  } catch (error) {console.error('Refresh error:', error);
-  res.status(500).json({ message: 'Server error', error });
-  }
-  };
-  
-  export const logoutUserController = async (req, res, next) => {
-    const sessionId = req.cookies.sessionId;
-    const refreshToken = req.cookies.refreshToken;
-  
-    console.log('Received logout request with sessionId:', sessionId, 'and refreshToken:', refreshToken);
-  
+    console.log('Cookies received refresh:', req.cookies);
+
+    const { sessionId, refreshToken } = req.cookies;
+
+    // Перевірка наявності необхідних даних у запиті
     if (!sessionId || !refreshToken) {
-      return res.status(400).send({ message: 'Missing sessionId or refreshToken' });
+      console.log('refresh controller', sessionId, refreshToken);
+      return res.status(400).json({
+        status: 400,
+        message: 'Session ID and Refresh Token are required',
+      });
     }
-  
-    try {
-      await logoutUserService({ sessionId, refreshToken });
-  
-      res.clearCookie('sessionId');
-      res.clearCookie('refreshToken');
-  
-      res.status(204).send();
-  
-      console.log('Cookies cleared and logout response sent');
-    } catch (error) {
-      next(error);
+
+    // Оновлення сесії
+    const session = await refreshSessionService({
+      sessionId,
+      refreshToken,
+    });
+
+    if (!session) {
+      return res.status(401).json({
+        status: 401,
+        message: 'Invalid session or refresh token',
+      });
     }
-  };
-  
+
+    // Налаштування нових куків
+    setupSession(res, session);
+
+    // Відповідь на запит
+    res.status(200).json({
+      status: 200,
+      message: 'Successfully refreshed a session!',
+      data: { accessToken: session.accessToken },
+    });
+  } catch (error) {
+    console.error('Refresh error:', error);
+    res.status(500).json({ message: 'Server error', error });
+  }
+};
+
+export const logoutUserController = async (req, res, next) => {
+  const sessionId = req.cookies.sessionId;
+  const refreshToken = req.cookies.refreshToken;
+
+  console.log(
+    'Received logout request with sessionId:',
+    sessionId,
+    'and refreshToken:',
+    refreshToken,
+  );
+
+  if (!sessionId || !refreshToken) {
+    return res
+      .status(400)
+      .send({ message: 'Missing sessionId or refreshToken' });
+  }
+
+  try {
+    await logoutUserService({ sessionId, refreshToken });
+
+    res.clearCookie('sessionId');
+    res.clearCookie('refreshToken');
+
+    res.status(204).send();
+
+    console.log('Cookies cleared and logout response sent');
+  } catch (error) {
+    next(error);
+  }
+};

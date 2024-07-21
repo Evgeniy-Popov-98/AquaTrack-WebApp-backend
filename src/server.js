@@ -22,7 +22,7 @@ export const setupServer = () => {
   );
   app.use(
     cors({
-      origin: 'https://aqua-track-web-app-frontend.vercel.app/',
+      origin: 'https://aqua-track-web-app-frontend.vercel.app',
       credentials: true,
     }),
   );

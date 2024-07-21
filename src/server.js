@@ -20,19 +20,10 @@ export const setupServer = () => {
       limit: '100kb',
     }),
   );
-  // app.use(
-  //   cors(),
-  //   {
-  //   origin: 'https://aqua-track-web-app-frontend.vercel.app/',
-  //   origin: 'http://localhost:5173',
-  //   credentials: true,
-  //   }
-  // );
 
   app.use(
     cors({
-      // origin: 'https://aqua-track-web-app-frontend.vercel.app',
-      origin: 'http://localhost:5173',
+      origin: 'https://aqua-track-web-app-frontend.vercel.app',
       credentials: true,
     }),
   );

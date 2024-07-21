@@ -128,11 +128,12 @@ export const updateUserController = async (req, res, next) => {
     const user = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
     const userData = removeSensitiveFields(user);
 
-    res.status(200).json({
-      status: 200,
-      message: 'User updated successfully',
-      data: userData,
-    });
+    // res.status(200).json({
+    //   status: 200,
+    //   message: 'User updated successfully',
+    //   data: userData,
+    // });
+    res.status(200).json({ user: userData });
   } catch (error) {
     next(error);
   }
@@ -143,7 +144,7 @@ export const refreshTokensController = async (req, res, next) => {
 
   // Перевірка наявності необхідних даних у запиті
   if (!sessionId || !refreshToken) {
-    console.log("refresh controller", sessionId, refreshToken);
+    console.log('refresh controller', sessionId, refreshToken);
     return res.status(400).json({
       status: 400,
       message: 'Session ID and Refresh Token are required',

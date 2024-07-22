@@ -11,7 +11,7 @@ import { validateGoogleOAuthSchema } from '../validation/validateGoogleOAuth.js'
 import User from '../db/models/User.js';
 import createHttpError from 'http-errors';
 const setupSession = (res, session) => {
-  res.cookie('sessionId', session._id, {
+  res.cookie('sessionId', session._id.toString(), {
     httpOnly: true,
     expires: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
   });
@@ -38,8 +38,6 @@ export const getTotalUsers = async (req, res) => {
   }
 };
 
-
-
 export const registerUserController = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -64,6 +62,7 @@ export const loginUserController = async (req, res, next) => {
     const { session, userId } = await loginUserService({ email, password });
 
     setupSession(res, session);
+    console.log('Cookies received log:', req.cookies);
 
     res.status(200).json({
       status: 200,

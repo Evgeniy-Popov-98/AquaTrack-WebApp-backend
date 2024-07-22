@@ -1,16 +1,16 @@
 import { WaterCollection } from '../db/models/water.js';
 import { validateDate } from '../validation/dateValidation.js';
 //import { formatResponse } from '../utils/formatResponse.js';
-import User from "../db/models/User.js";
+import User from '../db/models/User.js';
 
 export const createWater = async (userId, payload) => {
-  const water = await WaterCollection.create({userId, ...payload});
+  const water = await WaterCollection.create({ userId, ...payload });
   return water;
 };
 
-export const patchWater = async (userId, waterId, payload, options={}) => {
+export const patchWater = async (userId, waterId, payload, options = {}) => {
   const rawResult = await WaterCollection.findOneAndUpdate(
-    {userId, _id: waterId},
+    { userId, _id: waterId },
     payload,
     { new: true, includeResultMetadata: true, ...options },
   );
@@ -19,13 +19,13 @@ export const patchWater = async (userId, waterId, payload, options={}) => {
 
 export const deleteWater = async (userId, waterId) => {
   const water = await WaterCollection.findOneAndDelete({
-    userId, _id: waterId,
+    userId,
+    _id: waterId,
   });
   return water;
 };
 
 export const fetchDailyService = async (userId, dateString) => {
-
   if (!validateDate(dateString)) {
     console.error('Invalid date format:', dateString);
     throw new Error('Invalid date format');
@@ -54,8 +54,12 @@ export const fetchDailyService = async (userId, dateString) => {
       throw new Error('User not found');
     }
 
-    const totalConsumption = dailyConsumption.reduce((total, record) => total + record.amountOfWater, 0);
-    const percentageOfDailyIntake = (totalConsumption / user.dailyWaterIntake) * 100;
+    const totalConsumption = dailyConsumption.reduce(
+      (total, record) => total + record.amountOfWater,
+      0,
+    );
+    const percentageOfDailyIntake =
+      (totalConsumption / user.dailyWaterIntake) * 100;
 
     return {
       dateOrMonth: dateString,
@@ -67,7 +71,6 @@ export const fetchDailyService = async (userId, dateString) => {
     throw new Error('Server error');
   }
 };
-
 
 export const fetchMonthlyService = async (userId, dateString) => {
   if (!validateDate(dateString)) {
@@ -87,9 +90,9 @@ export const fetchMonthlyService = async (userId, dateString) => {
     },
   });
 
-  if (!monthlyConsumption || monthlyConsumption.length === 0) {
-    throw new Error('Data for the specified month was not found');
-  }
+  //   if (!monthlyConsumption || monthlyConsumption.length === 0) {
+  //     throw new Error('Data for the specified month was not found');
+  //   }
 
   // Отримуємо користувача для доступу до денної норми води
   const user = await User.findById(userId);
@@ -105,12 +108,14 @@ export const fetchMonthlyService = async (userId, dateString) => {
   let totalMonthlyConsumption = 0;
 
   for (let day = 1; day <= daysInMonth; day++) {
-    const dayKey = `${year}-${month.padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
+    const dayKey = `${year}-${month.padStart(2, '0')}-${day
+      .toString()
+      .padStart(2, '0')}`;
     dailyConsumptionMap[dayKey] = 0;
   }
 
   // Заповнюємо об'єкт даними про споживання води
-  monthlyConsumption.forEach(record => {
+  monthlyConsumption.forEach((record) => {
     const dayKey = record.createdAt.toISOString().slice(0, 10);
     dailyConsumptionMap[dayKey] += record.amountOfWater;
     totalMonthlyConsumption += record.amountOfWater;

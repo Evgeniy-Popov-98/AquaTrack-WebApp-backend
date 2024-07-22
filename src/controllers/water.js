@@ -57,12 +57,25 @@ export const deleteWaterController = async (req, res, next) => {
 };
 
 export const fetchDailyController = async (req, res) => {
-  const userId = req.user._id;
-  const date = req.params.date;
+  try {
+    const userId = req.user._id;
+    const date = req.params.date;
 
-  const result = await fetchDailyService(userId, date);
+    if (!date) {
+      return res.status(400).json({ message: 'Date is required' });
+    }
 
-  res.status(200).json(result);
+    const result = await fetchDailyService(userId, date);
+
+    if (!result || result.length === 0) {
+      return res.status(200).json({ dateOrMonth: date, data: [] }); // Повертає порожній масив, якщо даних немає
+    }
+
+    res.status(200).json(result);
+  } catch (error) {
+    console.error('Error fetching daily water data:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
 };
 
 export const fetchMonthlyController = async (req, res) => {

@@ -26,18 +26,6 @@ requestBody:
             description: 'Date of consumption'
             type: string
             example: '2022-10-10'
-          month:
-            description: 'Month of consumption'
-            type: string
-            example: 'January'
-          userId:
-            description: 'User id'
-            type: string
-            example: '6655a67a37bc0571c96d9655'
-          consumption:
-            description: 'Consumption'
-            type: number
-            example: 100
 responses:
   '200':
     description: 'Successfully patched a water!'

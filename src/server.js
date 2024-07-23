@@ -4,21 +4,16 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import rootRouter from './routers/index.js';
 import { env } from './utils/env.js';
-import { ENV_VARS } from './constants/constants.js';
+import { ENV_VARS, UPLOAD_DIR } from './constants/constants.js';
 import { notFoundHandler } from './middleware/notFoundHandler.js';
 import { errorHandler } from './middleware/errorHandler.js';
 import 'dotenv/config';
+import { swaggerDocs } from './middleware/swaggerDocs.js';
 
 export const setupServer = () => {
   const app = express();
-  app.use(express.json());
 
-  app.use(
-    cors({
-      origin: 'http://localhost:5173',
-      credentials: true,
-    }),
-  );
+  app.use(express.json());
 
   app.use(cookieParser());
 
@@ -28,17 +23,12 @@ export const setupServer = () => {
       limit: '100kb',
     }),
   );
-  app.use(
-    cors({
-      origin: 'http://localhost:5173',
-      credentials: true,
-    }),
-  );
 
   app.use(
-    express.json({
-      type: ['application/json', 'application/vnd.api+json'],
-      limit: '100kb',
+    cors({
+      origin: 'https://aqua-track-web-app-frontend.vercel.app',
+      //   origin: ' http://localhost:4000',
+      credentials: true,
     }),
   );
 
@@ -50,6 +40,8 @@ export const setupServer = () => {
     }),
   );
 
+  app.use('/uploads', express.static(UPLOAD_DIR));
+  app.use('/api-docs', swaggerDocs());
   app.use(rootRouter);
 
   app.use('*', notFoundHandler);

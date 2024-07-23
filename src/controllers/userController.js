@@ -74,42 +74,6 @@ export const getFindtUserController = async (req, res, next) => {
   });
 };
 
-//export const updateUserController = async (req, res, next) => {
-//const { body } = req;
-//const { userId } = req.params;
-//const avatar = req.file;
-
-//try {
-//let updatedUser;
-
-//if (avatar) {
-//const avatarUrl = await saveFile(avatar);
-//updatedUser = await updateUserService(userId, {
-//...body,
-//avatar: avatarUrl,
-//});
-//} else {
-//updatedUser = await updateUserService(userId, { ...body });
-//}
-
-//if (!updatedUser) {
-//throw createHttpError(404, { message: 'User not found' });
-//}
-
-// Видаляємо пароль та __v з відповіді
-//const user = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
-//const userData = removeSensitiveFields(user);
-
-//res.status(200).json({
-//status: 200,
-//message: 'User updated successfully',
-//data: userData,
-//});
-//} catch (error) {
-//next(error);
-//}
-//};
-
 export const updateUserController = async (req, res, next) => {
   try {
     let avatarUrl;
@@ -129,11 +93,7 @@ export const updateUserController = async (req, res, next) => {
     const user = updatedUser.toObject ? updatedUser.toObject() : updatedUser;
     const userData = removeSensitiveFields(user);
 
-    res.status(200).json({
-      status: 200,
-      message: 'User updated successfully',
-      data: userData,
-    });
+    res.status(200).json({ user: userData });
   } catch (error) {
     next(error);
   }

@@ -13,8 +13,59 @@ tags:
   - name: user
     description: User operations.
 servers:
+  # - url: http://localhost:3000
   - url: https://aquatrack-webapp-backend.onrender.com
 paths:
+  /water:
+    post:
+      $ref: ../swagger/paths/water/post.yaml
+  /water/:{id}:
+    patch:
+      $ref: ../swagger/paths/water/{id}/patch.yaml
+    delete:
+      $ref: ../swagger/paths/water/{id}/delete.yaml
+  /water/daily/:{date}:
+    get:
+      $ref: ../swagger/paths/water/daily/{date}/get.yaml
+  /water/monthly/:{month}:
+    get:
+      $ref: ../swagger/paths/water/monthly/{month}/get.yaml
+  /users/total-users:
+    get:
+      $ref: ../swagger/paths/user/get-total-users.yaml
+  /users/register:
+    post:
+      $ref: ../swagger/paths/user/register.yaml
+  /users/login:
+    post:
+      $ref: ../swagger/paths/user/login.yaml
+  /users/current:
+    get:
+      $ref: ../swagger/paths/user/get-current.yaml
+  /users/:{userId}:
+    get:
+      $ref: ../swagger/paths/user/{userId}/get.yaml
+  /users/update:
+    patch:
+      $ref: ../swagger/paths/user/update-user.yaml
+  /users/refresh-tokens:
+    post:
+      $ref: ../swagger/paths/user/refresh.yaml
+  /users/logout:
+    post:
+      $ref: ../swagger/paths/user/logout.yaml
+  /users/send-reset-email:
+    post:
+      $ref: ../swagger/paths/user/send-reset-email.yaml
+  /users/reset-password:
+    post:
+      $ref: ../swagger/paths/user/reset-password.yaml
+  /users/get-oauth-url:
+    post:
+      $ref: ../swagger/paths/user/get-oauth-url.yaml
+  /users/verify-google-oauth:
+    post:
+      $ref: ../swagger/paths/user/verify-google-oauth.yaml
 components:
   securitySchemes:
     bearerAuth:

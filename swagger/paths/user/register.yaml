@@ -1,0 +1,101 @@
+tags:
+  - user
+summary: Register a new user
+operationId: registerUserService
+description: Register a new user
+security:
+  - bearerAuth: []
+requestBody:
+  required: true
+  content:
+    application/json:
+      schema:
+        type: object
+        required:
+          - email
+          - password
+        properties:
+          email:
+            type: string
+            format: email
+            example: 'bosini@example.com'
+          password:
+            type: string
+            format: password
+            example: 'securepassword'
+responses:
+  '201':
+    description: Successfully registered a user!
+    content:
+      application/json:
+        schema:
+          properties:
+            status:
+              type: integer
+              example: 201
+            message:
+              type: string
+              example: Successfully registered a user!
+            data:
+              type: object
+              properties:
+                user:
+                  type: object
+                  properties:
+                    userID:
+                      type: string
+                      description: The user's ID.
+                      example: '60d0fe4f5311236168a109ca'
+                    name:
+                      type: string
+                      description: The user's name.
+                      example: 'John Doe'
+                    email:
+                      type: string
+                      description: The user's email.
+                      example: 'john.doe@example.com'
+                    gender:
+                      type: string
+                      description: The user's gender.
+                      example: 'male'
+                    weight:
+                      type: number
+                      description: The user's weight in kg.
+                      example: 75
+                    activeSportsTime:
+                      type: number
+                      description: The user's active sports time in minutes.
+                      example: 30
+                    dailyWaterIntake:
+                      type: number
+                      description: The user's daily water intake in liters.
+                      example: 2.5
+                    avatar:
+                      type: string
+                      description: URL of the user's avatar.
+                      example: 'https://example.com/avatar.jpg'
+            access_token:
+              type: string
+              example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9
+  '400':
+    $ref: ../../components/responses/400.yaml
+  '409':
+    description: Email already in use!
+    content:
+      application/json:
+        schema:
+          properties:
+            status:
+              type: integer
+              example: 409
+            message:
+              type: string
+              example: ConflictError
+            data:
+              type: object
+              properties:
+                message:
+                  type: string
+                  example: Conflict. Email already in use!
+  '500':
+    $ref: ../../components/responses/500.yaml

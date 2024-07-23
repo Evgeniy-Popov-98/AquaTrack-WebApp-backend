@@ -1,0 +1,36 @@
+tags:
+  - user
+summary: Get total users
+description: Get total users
+operationId: getTotalUsers
+security:
+  - bearerAuth: []
+responses:
+  '200':
+    description: Successful response with the total number of users and user list.
+    content:
+      application/json:
+        schema:
+          type: object
+          properties:
+            totalUsers:
+              type: integer
+              description: The total number of users.
+              example: '123'
+            users:
+              type: array
+              items:
+                type: object
+                properties:
+                  userId:
+                    type: string
+                    description: The user's ID.
+                    example: '60d0fe4f5311236168a109ca'
+                  name:
+                    type: string
+                    description: The user's name.
+                    example: 'John Doe'
+  '400':
+    $ref: '../../components/responses/400.yaml'
+  '500':
+    $ref: '../../components/responses/500.yaml'

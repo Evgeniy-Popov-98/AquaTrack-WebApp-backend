@@ -26,6 +26,7 @@ const UserSchema = new Schema({
   },
   dailyWaterIntake: {
     type: Number,
+    default: 1.5,
   },
   avatar: {
     type: String,

@@ -92,7 +92,7 @@ export const refreshSessionService = async ({ sessionId, refreshToken }) => {
   }
 
   // Видалення попередньої сессії
-  await Session.deleteOne({ _id: sessionId });
+  await Session.deleteOne({ _id: sessionId, refreshToken });
 
   // Створення нової сессії в базі і повернення клієнту
   return await Session.create({

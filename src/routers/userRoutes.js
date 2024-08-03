@@ -57,7 +57,6 @@ router.patch(
 
 router.post(
   '/refresh-tokens',
-  authenticate,
   ctrlWrapper(refreshTokensController),
 );
 

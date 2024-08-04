@@ -17,12 +17,14 @@ const setupSession = (res, session) => {
   res.cookie('sessionId', session._id, {
     httpOnly: true,
     secure: isProduction,
+    sameSite: !isProduction ? 'Lax' : 'None',
     expires: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
   });
 
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
     secure: isProduction,
+    sameSite: !isProduction ? 'Lax' : 'None',
     expires: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
   });
 };

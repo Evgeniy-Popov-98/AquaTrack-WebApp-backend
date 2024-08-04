@@ -23,10 +23,18 @@ export const setupServer = () => {
     }),
   );
 
+  const allowedOrigins = ['http://localhost:4000', 'https://aqua-track-web-app-frontend.vercel.app'];
+
   app.use(
     cors({
-      origin: 'https://aqua-track-web-app-frontend.vercel.app',
-      // origin: ' http://localhost:4000',
+      origin: (origin, callback) => {
+        if (!origin || allowedOrigins.includes(origin)) {
+          callback(null, true);
+        } else {
+          callback(new Error('Not allowed by CORS'));
+        }
+      },
+      optionsSuccessStatus: 200,
       credentials: true,
     }),
   );

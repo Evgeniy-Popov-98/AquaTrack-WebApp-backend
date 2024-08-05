@@ -23,7 +23,10 @@ export const setupServer = () => {
     }),
   );
 
-  const allowedOrigins = ['http://localhost:4000', 'https://aqua-track-web-app-frontend.vercel.app'];
+  const allowedOrigins = [
+    'http://localhost:4000',
+    'https://aqua-track-web-app-frontend.vercel.app',
+  ];
 
   app.use(
     cors({
@@ -39,13 +42,13 @@ export const setupServer = () => {
     }),
   );
 
-   app.use(
-     pino({
-       transport: {
-         target: 'pino-pretty',
-       },
-     }),
-   );
+  //    app.use(
+  //      pino({
+  //        transport: {
+  //          target: 'pino-pretty',
+  //        },
+  //      }),
+  //    );
 
   app.use('/uploads', express.static(UPLOAD_DIR));
   app.use('/api-docs', swaggerDocs());

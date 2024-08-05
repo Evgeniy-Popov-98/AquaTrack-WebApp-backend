@@ -10,14 +10,21 @@ import { REFRESH_TOKEN_LIFE_TIME } from '../constants/constants.js';
 import { validateGoogleOAuthSchema } from '../validation/validateGoogleOAuth.js';
 import User from '../db/models/User.js';
 import createHttpError from 'http-errors';
+
 const setupSession = (res, session) => {
+  const isProduction = process.env.NODE_ENV === 'production';
+
   res.cookie('sessionId', session._id, {
     httpOnly: true,
+    secure: isProduction,
+    sameSite: !isProduction ? 'Lax' : 'None',
     expires: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
   });
 
   res.cookie('refreshToken', session.refreshToken, {
     httpOnly: true,
+    secure: isProduction,
+    sameSite: !isProduction ? 'Lax' : 'None',
     expires: new Date(Date.now() + REFRESH_TOKEN_LIFE_TIME),
   });
 };
